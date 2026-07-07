@@ -1,624 +1,488 @@
-# 📁 Architecture des Dossiers et Fichiers - CashCoin
+# 📁 Architecture des Dossiers et Fichiers - CashCoin (Next.js 15)
+
+> **Migration** : React + Vite → **Next.js 15 (App Router)**
+> Backend NestJS inchangé — seul le dossier `client/` est migré vers `web/`
+
+---
 
 ## Arborescence Complète du Projet
-ea-shop/
+
+```
+cashcoin/
 │
-├── 📄 README.md # Documentation principale du projet
-├── 📄 LICENSE # Licence MIT
-├── 📄 .gitignore # Fichiers ignorés par Git
-├── 📄 .editorconfig # Configuration éditeur de code
-├── 📄 .env.example # Exemple de variables d'environnement
-├── 📄 docker-compose.yml # Configuration Docker pour le développement
-├── 📄 docker-compose.prod.yml # Configuration Docker pour la production
-├── 📄 package.json # Scripts et dépendances racine
+├── 📄 README.md
+├── 📄 LICENSE
+├── 📄 .gitignore
+├── 📄 .editorconfig
+├── 📄 .env.example
+├── 📄 docker-compose.yml
+├── 📄 docker-compose.prod.yml
+├── 📄 package.json                    # Scripts racine (monorepo avec workspaces npm)
 │
-├── 📁 server/ # APPLICATION BACKEND NESTJS
-│ ├── 📄 package.json # Dépendances backend
-│ ├── 📄 tsconfig.json # Configuration TypeScript
-│ ├── 📄 tsconfig.build.json # Configuration build TypeScript
-│ ├── 📄 nest-cli.json # Configuration CLI NestJS
-│ ├── 📄 .env # Variables d'environnement (non versionné)
-│ ├── 📄 .env.example # Template variables d'environnement
-│ ├── 📄 Dockerfile # Image Docker backend
-│ ├── 📄 .dockerignore # Fichiers ignorés par Docker
-│ │
-│ ├── 📁 src/ # CODE SOURCE PRINCIPAL
-│ │ ├── 📄 main.ts # Point d'entrée de l'application
-│ │ ├── 📄 app.module.ts # Module racine NestJS
-│ │ ├── 📄 app.controller.ts # Contrôleur racine
-│ │ ├── 📄 app.service.ts # Service racine
-│ │ │
-│ │ ├── 📁 common/ # ÉLÉMENTS PARTAGÉS ET RÉUTILISABLES
-│ │ │ ├── 📁 decorators/ # Décorateurs TypeScript personnalisés
-│ │ │ │ ├── 📄 roles.decorator.ts # Décorateur pour définir les rôles requis
-│ │ │ │ ├── 📄 current-user.decorator.ts # Décorateur pour extraire l'utilisateur
-│ │ │ │ ├── 📄 public.decorator.ts # Décorateur pour routes publiques
-│ │ │ │ └── 📄 api-paginated.decorator.ts # Décorateur pour réponses paginées
-│ │ │ │
-│ │ │ ├── 📁 guards/ # Guards d'authentification et autorisation
-│ │ │ │ ├── 📄 jwt-auth.guard.ts # Guard vérifiant le JWT
-│ │ │ │ ├── 📄 roles.guard.ts # Guard vérifiant le rôle utilisateur
-│ │ │ │ ├── 📄 local-auth.guard.ts # Guard pour login/mot de passe
-│ │ │ │ └── 📄 throttle.guard.ts # Guard anti brute-force
-│ │ │ │
-│ │ │ ├── 📁 filters/ # Filtres d'exception globaux
-│ │ │ │ ├── 📄 http-exception.filter.ts # Filtre standard HTTP
-│ │ │ │ ├── 📄 validation.filter.ts # Filtre pour erreurs validation
-│ │ │ │ └── 📄 all-exceptions.filter.ts # Filtre catch-all
-│ │ │ │
-│ │ │ ├── 📁 interceptors/ # Intercepteurs de requêtes/réponses
-│ │ │ │ ├── 📄 transform.interceptor.ts # Transforme les réponses
-│ │ │ │ ├── 📄 logging.interceptor.ts # Log toutes les requêtes
-│ │ │ │ ├── 📄 cache.interceptor.ts # Gestion du cache
-│ │ │ │ └── 📄 timeout.interceptor.ts # Timeout des requêtes
-│ │ │ │
-│ │ │ ├── 📁 pipes/ # Pipes de validation et transformation
-│ │ │ │ ├── 📄 validation.pipe.ts # Pipe validation globale
-│ │ │ │ ├── 📄 parse-uuid.pipe.ts # Validation UUID
-│ │ │ │ └── 📄 trim.pipe.ts # Trim des strings
-│ │ │ │
-│ │ │ ├── 📁 middleware/ # Middlewares Express
-│ │ │ │ ├── 📄 logger.middleware.ts # Logging des requêtes
-│ │ │ │ └── 📄 cors.middleware.ts # Configuration CORS
-│ │ │ │
-│ │ │ ├── 📁 enums/ # Énumérations partagées
-│ │ │ │ ├── 📄 user-role.enum.ts # Rôles utilisateur
-│ │ │ │ ├── 📄 order-status.enum.ts # Statuts de commande
-│ │ │ │ └── 📄 payment-method.enum.ts # Méthodes de paiement
-│ │ │ │
-│ │ │ ├── 📁 interfaces/ # Interfaces TypeScript
-│ │ │ │ ├── 📄 api-response.interface.ts # Format réponse standard
-│ │ │ │ ├── 📄 pagination.interface.ts # Interface pagination
-│ │ │ │ └── 📄 jwt-payload.interface.ts # Payload du JWT
-│ │ │ │
-│ │ │ └── 📁 utils/ # Fonctions utilitaires
-│ │ │ ├── 📄 password.util.ts # Hashage et vérification
-│ │ │ ├── 📄 slug.util.ts # Génération de slugs
-│ │ │ └── 📄 date.util.ts # Formatage de dates
-│ │ │
-│ │ ├── 📁 config/ # CONFIGURATIONS EXTERNES
-│ │ │ ├── 📄 database.config.ts # Configuration TypeORM
-│ │ │ ├── 📄 jwt.config.ts # Configuration JWT
-│ │ │ ├── 📄 stripe.config.ts # Configuration Stripe
-│ │ │ ├── 📄 mail.config.ts # Configuration email
-│ │ │ ├── 📄 redis.config.ts # Configuration Redis
-│ │ │ ├── 📄 upload.config.ts # Configuration upload
-│ │ │ └── 📄 app.config.ts # Configuration générale
-│ │ │
-│ │ ├── 📁 database/ # BASE DE DONNÉES
-│ │ │ ├── 📁 migrations/ # Migrations TypeORM
-│ │ │ │ ├── 📄 001-create-users.ts
-│ │ │ │ ├── 📄 002-create-products.ts
-│ │ │ │ ├── 📄 003-create-orders.ts
-│ │ │ │ └── 📄 ...
-│ │ │ │
-│ │ │ └── 📁 seeds/ # Données de test
-│ │ │ ├── 📄 seed.ts # Script principal de seed
-│ │ │ ├── 📄 users.seed.ts # Seeds utilisateurs
-│ │ │ ├── 📄 products.seed.ts # Seeds produits
-│ │ │ └── 📄 orders.seed.ts # Seeds commandes
-│ │ │
-│ │ └── 📁 modules/ # MODULES MÉTIER (DOMAIN-DRIVEN)
-│ │ │
-│ │ ├── 📁 auth/ # AUTHENTIFICATION
-│ │ │ ├── 📄 auth.module.ts # Module auth
-│ │ │ ├── 📄 auth.controller.ts # Routes /auth/*
-│ │ │ ├── 📄 auth.service.ts # Logique métier auth
-│ │ │ ├── 📁 dto/ # Data Transfer Objects
-│ │ │ │ ├── 📄 login.dto.ts # Validation login
-│ │ │ │ ├── 📄 register.dto.ts # Validation inscription
-│ │ │ │ ├── 📄 refresh-token.dto.ts # Validation refresh token
-│ │ │ │ ├── 📄 forgot-password.dto.ts # Validation mot de passe oublié
-│ │ │ │ └── 📄 reset-password.dto.ts # Validation reset mot de passe
-│ │ │ ├── 📁 strategies/ # Stratégies Passport
-│ │ │ │ ├── 📄 jwt.strategy.ts # Stratégie JWT
-│ │ │ │ ├── 📄 local.strategy.ts # Stratégie locale
-│ │ │ │ └── 📄 refresh.strategy.ts # Stratégie refresh token
-│ │ │ └── 📁 tests/ # Tests unitaires auth
-│ │ │ ├── 📄 auth.service.spec.ts
-│ │ │ └── 📄 auth.controller.spec.ts
-│ │ │
-│ │ ├── 📁 users/ # GESTION UTILISATEURS
-│ │ │ ├── 📄 users.module.ts # Module users
-│ │ │ ├── 📄 users.controller.ts # Routes /users/*
-│ │ │ ├── 📄 users.service.ts # Logique métier users
-│ │ │ ├── 📁 entities/ # Entités TypeORM
-│ │ │ │ └── 📄 user.entity.ts # Modèle User
-│ │ │ ├── 📁 dto/ # DTOs utilisateurs
-│ │ │ │ ├── 📄 create-user.dto.ts # Création utilisateur
-│ │ │ │ ├── 📄 update-user.dto.ts # Modification utilisateur
-│ │ │ │ └── 📄 user-response.dto.ts # Réponse utilisateur
-│ │ │ ├── 📁 enums/ # Énumérations locales
-│ │ │ │ └── 📄 user-role.enum.ts # Rôles disponibles
-│ │ │ └── 📁 tests/
-│ │ │ ├── 📄 users.service.spec.ts
-│ │ │ └── 📄 users.controller.spec.ts
-│ │ │
-│ │ ├── 📁 products/ # CATALOGUE PRODUITS
-│ │ │ ├── 📄 products.module.ts # Module products
-│ │ │ ├── 📄 products.controller.ts # Routes /products/*
-│ │ │ ├── 📄 products.service.ts # Logique métier produits
-│ │ │ ├── 📁 entities/
-│ │ │ │ └── 📄 product.entity.ts # Modèle Product
-│ │ │ ├── 📁 dto/
-│ │ │ │ ├── 📄 create-product.dto.ts # Création produit
-│ │ │ │ ├── 📄 update-product.dto.ts # Modification produit
-│ │ │ │ ├── 📄 query-product.dto.ts # Filtres et recherche
-│ │ │ │ └── 📄 product-response.dto.ts # Réponse produit
-│ │ │ ├── 📁 enums/
-│ │ │ │ └── 📄 product-category.enum.ts
-│ │ │ └── 📁 tests/
-│ │ │ ├── 📄 products.service.spec.ts
-│ │ │ └── 📄 products.controller.spec.ts
-│ │ │
-│ │ ├── 📁 cart/ # GESTION PANIER
-│ │ │ ├── 📄 cart.module.ts # Module cart
-│ │ │ ├── 📄 cart.controller.ts # Routes /cart/*
-│ │ │ ├── 📄 cart.service.ts # Logique métier panier
-│ │ │ ├── 📁 entities/
-│ │ │ │ └── 📄 cart-item.entity.ts # Modèle CartItem
-│ │ │ ├── 📁 dto/
-│ │ │ │ ├── 📄 add-to-cart.dto.ts # Ajout au panier
-│ │ │ │ ├── 📄 update-cart.dto.ts # Modification panier
-│ │ │ │ └── 📄 cart-response.dto.ts # Réponse panier
-│ │ │ └── 📁 tests/
-│ │ │ └── 📄 cart.service.spec.ts
-│ │ │
-│ │ ├── 📁 orders/ # GESTION COMMANDES
-│ │ │ ├── 📄 orders.module.ts # Module orders
-│ │ │ ├── 📄 orders.controller.ts # Routes /orders/*
-│ │ │ ├── 📄 orders.service.ts # Logique métier commandes
-│ │ │ ├── 📁 entities/
-│ │ │ │ ├── 📄 order.entity.ts # Modèle Order
-│ │ │ │ └── 📄 order-item.entity.ts # Modèle OrderItem
-│ │ │ ├── 📁 dto/
-│ │ │ │ ├── 📄 create-order.dto.ts # Création commande
-│ │ │ │ ├── 📄 update-order.dto.ts # Modification statut
-│ │ │ │ └── 📄 order-response.dto.ts # Réponse commande
-│ │ │ ├── 📁 enums/
-│ │ │ │ └── 📄 order-status.enum.ts # Statuts de commande
-│ │ │ └── 📁 tests/
-│ │ │ ├── 📄 orders.service.spec.ts
-│ │ │ └── 📄 orders.controller.spec.ts
-│ │ │
-│ │ ├── 📁 payment/ # PAIEMENT STRIPE
-│ │ │ ├── 📄 payment.module.ts # Module payment
-│ │ │ ├── 📄 payment.controller.ts # Routes /payment/*
-│ │ │ ├── 📄 payment.service.ts # Logique métier paiement
-│ │ │ ├── 📁 dto/
-│ │ │ │ ├── 📄 create-payment.dto.ts # Intention de paiement
-│ │ │ │ └── 📄 payment-response.dto.ts # Réponse paiement
-│ │ │ ├── 📁 webhooks/ # Webhooks Stripe
-│ │ │ │ └── 📄 stripe.webhook.ts # Handler webhook
-│ │ │ └── 📁 tests/
-│ │ │ └── 📄 payment.service.spec.ts
-│ │ │
-│ │ ├── 📁 dashboard/ # TABLEAU DE BORD
-│ │ │ ├── 📄 dashboard.module.ts # Module dashboard
-│ │ │ ├── 📄 dashboard.controller.ts # Routes /dashboard/*
-│ │ │ ├── 📄 dashboard.service.ts # Logique métier stats
-│ │ │ ├── 📁 dto/
-│ │ │ │ └── 📄 dashboard-query.dto.ts # Filtres période
-│ │ │ └── 📁 tests/
-│ │ │ └── 📄 dashboard.service.spec.ts
-│ │ │
-│ │ ├── 📁 reviews/ # AVIS CLIENTS
-│ │ │ ├── 📄 reviews.module.ts # Module reviews
-│ │ │ ├── 📄 reviews.controller.ts # Routes /reviews/*
-│ │ │ ├── 📄 reviews.service.ts # Logique métier avis
-│ │ │ ├── 📁 entities/
-│ │ │ │ └── 📄 review.entity.ts # Modèle Review
-│ │ │ ├── 📁 dto/
-│ │ │ │ ├── 📄 create-review.dto.ts # Création avis
-│ │ │ │ └── 📄 review-response.dto.ts # Réponse avis
-│ │ │ └── 📁 tests/
-│ │ │ └── 📄 reviews.service.spec.ts
-│ │ │
-│ │ └── 📁 notifications/ # NOTIFICATIONS
-│ │ ├── 📄 notifications.module.ts # Module notifications
-│ │ ├── 📄 notifications.service.ts # Logique envoi emails
-│ │ ├── 📁 templates/ # Templates emails HTML
-│ │ │ ├── 📄 welcome.hbs # Email bienvenue
-│ │ │ ├── 📄 order-confirmation.hbs # Confirmation commande
-│ │ │ └── 📄 reset-password.hbs # Reset mot de passe
-│ │ └── 📁 tests/
-│ │ └── 📄 notifications.service.spec.ts
-│ │
-│ ├── 📁 test/ # TESTS END-TO-END
-│ │ ├── 📄 app.e2e-spec.ts # Test E2E principal
-│ │ ├── 📄 auth.e2e-spec.ts # Tests auth
-│ │ ├── 📄 products.e2e-spec.ts # Tests produits
-│ │ └── 📄 orders.e2e-spec.ts # Tests commandes
-│ │
-│ ├── 📁 uploads/ # FICHIERS UPLOADÉS (non versionné)
-│ │ ├── 📁 products/ # Images produits
-│ │ └── 📁 avatars/ # Avatars utilisateurs
-│ │
-│ └── 📁 logs/ # LOGS APPLICATIFS (non versionné)
-│ ├── 📄 app.log
-│ └── 📄 error.log
+├── 📁 server/                         # APPLICATION BACKEND NESTJS (inchangé)
+│   └── ... (voir architecture originale)
 │
-├── 📁 client/ # APPLICATION FRONTEND REACT
-│ ├── 📄 package.json # Dépendances frontend
-│ ├── 📄 tsconfig.json # Configuration TypeScript
-│ ├── 📄 vite.config.ts # Configuration Vite
-│ ├── 📄 index.html # Point d'entrée HTML
-│ ├── 📄 .env # Variables environnement
-│ ├── 📄 .env.example # Template variables
-│ ├── 📄 Dockerfile # Image Docker frontend
-│ ├── 📄 .dockerignore
-│ │
-│ ├── 📁 public/ # FICHIERS STATIQUES PUBLICS
-│ │ ├── 📄 favicon.ico
-│ │ ├── 📄 manifest.json
-│ │ └── 📁 assets/
-│ │ ├── 📁 images/
-│ │ │ ├── 📄 logo.png
-│ │ │ ├── 📄 hero-bg.jpg
-│ │ │ └── 📄 placeholder-product.png
-│ │ └── 📁 fonts/
-│ │
-│ ├── 📁 src/ # CODE SOURCE REACT
-│ │ ├── 📄 main.tsx # Point d'entrée React
-│ │ ├── 📄 App.tsx # Composant racine
-│ │ ├── 📄 vite-env.d.ts # Types Vite
-│ │ │
-│ │ ├── 📁 assets/ # RESSOURCES STATIQUES
-│ │ │ ├── 📁 images/
-│ │ │ ├── 📁 icons/
-│ │ │ └── 📁 styles/
-│ │ │ ├── 📄 globals.css # Styles globaux
-│ │ │ ├── 📄 variables.css # Variables CSS
-│ │ │ └── 📄 tailwind.css # Entrée Tailwind
-│ │ │
-│ │ ├── 📁 components/ # COMPOSANTS RÉUTILISABLES
-│ │ │ ├── 📁 common/ # Composants génériques
-│ │ │ │ ├── 📁 Button/
-│ │ │ │ │ ├── 📄 Button.tsx
-│ │ │ │ │ ├── 📄 Button.types.ts
-│ │ │ │ │ ├── 📄 Button.styles.ts
-│ │ │ │ │ └── 📄 Button.test.tsx
-│ │ │ │ ├── 📁 Modal/
-│ │ │ │ │ ├── 📄 Modal.tsx
-│ │ │ │ │ ├── 📄 Modal.types.ts
-│ │ │ │ │ └── 📄 Modal.test.tsx
-│ │ │ │ ├── 📁 Table/
-│ │ │ │ │ ├── 📄 Table.tsx
-│ │ │ │ │ ├── 📄 Table.types.ts
-│ │ │ │ │ └── 📄 Table.test.tsx
-│ │ │ │ ├── 📁 Card/
-│ │ │ │ ├── 📁 Input/
-│ │ │ │ ├── 📁 Select/
-│ │ │ │ ├── 📁 Badge/
-│ │ │ │ ├── 📁 Avatar/
-│ │ │ │ ├── 📁 Spinner/
-│ │ │ │ ├── 📁 Alert/
-│ │ │ │ ├── 📁 Pagination/
-│ │ │ │ ├── 📁 Breadcrumb/
-│ │ │ │ ├── 📁 Tooltip/
-│ │ │ │ ├── 📁 Dropdown/
-│ │ │ │ └── 📁 SearchBar/
-│ │ │ │
-│ │ │ ├── 📁 layout/ # Composants de mise en page
-│ │ │ │ ├── 📁 AdminLayout/
-│ │ │ │ │ ├── 📄 AdminLayout.tsx
-│ │ │ │ │ ├── 📄 AdminSidebar.tsx
-│ │ │ │ │ ├── 📄 AdminHeader.tsx
-│ │ │ │ │ └── 📄 AdminFooter.tsx
-│ │ │ │ ├── 📁 CashierLayout/
-│ │ │ │ │ ├── 📄 CashierLayout.tsx
-│ │ │ │ │ └── 📄 CashierHeader.tsx
-│ │ │ │ ├── 📁 ShopLayout/
-│ │ │ │ │ ├── 📄 ShopLayout.tsx
-│ │ │ │ │ ├── 📄 Navbar.tsx
-│ │ │ │ │ └── 📄 Footer.tsx
-│ │ │ │ └── 📁 AuthLayout/
-│ │ │ │ └── 📄 AuthLayout.tsx
-│ │ │ │
-│ │ │ ├── 📁 guards/ # Guards de routes protégées
-│ │ │ │ ├── 📄 AdminGuard.tsx
-│ │ │ │ ├── 📄 CashierGuard.tsx
-│ │ │ │ ├── 📄 AuthGuard.tsx
-│ │ │ │ └── 📄 GuestGuard.tsx
-│ │ │ │
-│ │ │ └── 📁 forms/ # Composants formulaire complexes
-│ │ │ ├── 📁 ProductForm/
-│ │ │ │ ├── 📄 ProductForm.tsx
-│ │ │ │ └── 📄 ProductForm.validation.ts
-│ │ │ ├── 📁 UserForm/
-│ │ │ └── 📁 OrderForm/
-│ │ │
-│ │ ├── 📁 pages/ # PAGES DE L'APPLICATION
-│ │ │ ├── 📁 auth/ # Pages authentification
-│ │ │ │ ├── 📄 LoginPage.tsx
-│ │ │ │ ├── 📄 RegisterPage.tsx
-│ │ │ │ ├── 📄 ForgotPasswordPage.tsx
-│ │ │ │ └── 📄 ResetPasswordPage.tsx
-│ │ │ │
-│ │ │ ├── 📁 admin/ # Pages administrateur
-│ │ │ │ ├── 📄 DashboardPage.tsx
-│ │ │ │ ├── 📁 products/
-│ │ │ │ │ ├── 📄 ProductListPage.tsx
-│ │ │ │ │ ├── 📄 ProductCreatePage.tsx
-│ │ │ │ │ ├── 📄 ProductEditPage.tsx
-│ │ │ │ │ └── 📄 ProductDetailPage.tsx
-│ │ │ │ ├── 📁 users/
-│ │ │ │ │ ├── 📄 UserListPage.tsx
-│ │ │ │ │ ├── 📄 UserCreatePage.tsx
-│ │ │ │ │ └── 📄 UserDetailPage.tsx
-│ │ │ │ ├── 📁 orders/
-│ │ │ │ │ ├── 📄 AllOrdersPage.tsx
-│ │ │ │ │ └── 📄 OrderDetailPage.tsx
-│ │ │ │ ├── 📁 reports/
-│ │ │ │ │ └── 📄 ReportsPage.tsx
-│ │ │ │ └── 📁 settings/
-│ │ │ │ └── 📄 SettingsPage.tsx
-│ │ │ │
-│ │ │ ├── 📁 cashier/ # Pages caissier
-│ │ │ │ ├── 📄 POSPage.tsx
-│ │ │ │ ├── 📄 TransactionsPage.tsx
-│ │ │ │ └── 📄 DailyReportPage.tsx
-│ │ │ │
-│ │ │ ├── 📁 shop/ # Pages boutique client
-│ │ │ │ ├── 📄 HomePage.tsx
-│ │ │ │ ├── 📄 CatalogPage.tsx
-│ │ │ │ ├── 📄 ProductDetailPage.tsx
-│ │ │ │ ├── 📄 CartPage.tsx
-│ │ │ │ ├── 📄 CheckoutPage.tsx
-│ │ │ │ └── 📄 OrderConfirmationPage.tsx
-│ │ │ │
-│ │ │ ├── 📁 account/ # Pages compte client
-│ │ │ │ ├── 📄 ProfilePage.tsx
-│ │ │ │ ├── 📄 MyOrdersPage.tsx
-│ │ │ │ ├── 📄 OrderDetailPage.tsx
-│ │ │ │ ├── 📄 AddressesPage.tsx
-│ │ │ │ └── 📄 WishlistPage.tsx
-│ │ │ │
-│ │ │ └── 📁 errors/ # Pages d'erreur
-│ │ │ ├── 📄 NotFoundPage.tsx
-│ │ │ ├── 📄 ForbiddenPage.tsx
-│ │ │ └── 📄 ServerErrorPage.tsx
-│ │ │
-│ │ ├── 📁 services/ # SERVICES API
-│ │ │ ├── 📄 api.ts # Instance Axios configurée
-│ │ │ ├── 📄 auth.service.ts # Service authentification
-│ │ │ ├── 📄 users.service.ts # Service utilisateurs
-│ │ │ ├── 📄 products.service.ts # Service produits
-│ │ │ ├── 📄 cart.service.ts # Service panier
-│ │ │ ├── 📄 orders.service.ts # Service commandes
-│ │ │ ├── 📄 payment.service.ts # Service paiement
-│ │ │ ├── 📄 dashboard.service.ts # Service statistiques
-│ │ │ ├── 📄 reviews.service.ts # Service avis
-│ │ │ └── 📄 upload.service.ts # Service upload
-│ │ │
-│ │ ├── 📁 hooks/ # CUSTOM HOOKS REACT
-│ │ │ ├── 📄 useAuth.ts # Hook authentification
-│ │ │ ├── 📄 useCart.ts # Hook panier
-│ │ │ ├── 📄 useProducts.ts # Hook produits
-│ │ │ ├── 📄 useOrders.ts # Hook commandes
-│ │ │ ├── 📄 usePagination.ts # Hook pagination
-│ │ │ ├── 📄 useDebounce.ts # Hook debounce
-│ │ │ ├── 📄 useLocalStorage.ts # Hook localStorage
-│ │ │ ├── 📄 useMediaQuery.ts # Hook responsive
-│ │ │ └── 📄 useForm.ts # Hook formulaire
-│ │ │
-│ │ ├── 📁 context/ # CONTEXTES REACT
-│ │ │ ├── 📄 AuthContext.tsx # Contexte authentification
-│ │ │ ├── 📄 CartContext.tsx # Contexte panier
-│ │ │ ├── 📄 ThemeContext.tsx # Contexte thème
-│ │ │ └── 📄 NotificationContext.tsx # Contexte notifications
-│ │ │
-│ │ ├── 📁 store/ # STATE MANAGEMENT (REDUX)
-│ │ │ ├── 📄 store.ts # Configuration store
-│ │ │ ├── 📄 rootReducer.ts # Reducer racine
-│ │ │ └── 📁 slices/ # Slices Redux
-│ │ │ ├── 📄 authSlice.ts
-│ │ │ ├── 📄 cartSlice.ts
-│ │ │ ├── 📄 productsSlice.ts
-│ │ │ ├── 📄 ordersSlice.ts
-│ │ │ └── 📄 uiSlice.ts
-│ │ │
-│ │ ├── 📁 types/ # TYPES TYPESCRIPT
-│ │ │ ├── 📄 user.types.ts # Types utilisateur
-│ │ │ ├── 📄 product.types.ts # Types produit
-│ │ │ ├── 📄 order.types.ts # Types commande
-│ │ │ ├── 📄 cart.types.ts # Types panier
-│ │ │ ├── 📄 payment.types.ts # Types paiement
-│ │ │ ├── 📄 api.types.ts # Types API
-│ │ │ └── 📄 common.types.ts # Types communs
-│ │ │
-│ │ ├── 📁 utils/ # UTILITAIRES FRONTEND
-│ │ │ ├── 📄 formatCurrency.ts # Formatage monétaire
-│ │ │ ├── 📄 formatDate.ts # Formatage date
-│ │ │ ├── 📄 validators.ts # Validations formulaire
-│ │ │ ├── 📄 constants.ts # Constantes
-│ │ │ ├── 📄 routes.ts # Routes de l'app
-│ │ │ └── 📄 helpers.ts # Fonctions diverses
-│ │ │
-│ │ └── 📁 config/ # CONFIGURATION FRONTEND
-│ │ ├── 📄 routes.config.tsx # Configuration routage
-│ │ ├── 📄 menu.config.ts # Menus navigation
-│ │ └── 📄 theme.config.ts # Thème Material-UI
-│ │
-│ ├── 📁 tests/ # TESTS FRONTEND
-│ │ ├── 📁 unit/
-│ │ │ ├── 📁 components/
-│ │ │ ├── 📁 hooks/
-│ │ │ └── 📁 utils/
-│ │ ├── 📁 integration/
-│ │ └── 📁 e2e/
-│ │
-│ └── 📁 storybook/ # DOCUMENTATION COMPOSANTS (optionnel)
-│ └── 📁 stories/
+├── 📁 web/                            # APPLICATION FRONTEND NEXT.JS 15
+│   ├── 📄 package.json
+│   ├── 📄 tsconfig.json
+│   ├── 📄 next.config.ts              # Configuration Next.js
+│   ├── 📄 middleware.ts               # Middleware auth/redirections global
+│   ├── 📄 .env.local                  # Variables d'environnement (non versionné)
+│   ├── 📄 .env.example
+│   ├── 📄 Dockerfile
+│   ├── 📄 .dockerignore
+│   │
+│   ├── 📁 public/                     # FICHIERS STATIQUES PUBLICS
+│   │   ├── 📄 favicon.ico
+│   │   ├── 📄 manifest.json
+│   │   ├── 📄 robots.txt
+│   │   └── 📁 assets/
+│   │       ├── 📁 images/
+│   │       │   ├── 📄 logo.png
+│   │       │   ├── 📄 hero-bg.jpg
+│   │       │   └── 📄 placeholder-product.png
+│   │       └── 📁 fonts/
+│   │
+│   └── 📁 src/                        # CODE SOURCE PRINCIPAL
+│       │
+│       ├── 📁 app/                    # APP ROUTER - TOUTES LES ROUTES
+│       │   │
+│       │   ├── 📄 layout.tsx          # Layout racine (html, body, providers)
+│       │   ├── 📄 page.tsx            # Page d'accueil "/" → redirige vers /shop
+│       │   ├── 📄 error.tsx           # Page d'erreur globale
+│       │   ├── 📄 not-found.tsx       # Page 404 globale
+│       │   ├── 📄 loading.tsx         # Skeleton chargement global
+│       │   ├── 📄 globals.css         # Styles globaux
+│       │   │
+│       │   ├── 📁 (auth)/             # ROUTE GROUP - Auth (layout partagé)
+│       │   │   ├── 📄 layout.tsx      # AuthLayout (centré, sans navbar)
+│       │   │   ├── 📁 login/
+│       │   │   │   └── 📄 page.tsx    # /login
+│       │   │   ├── 📁 register/
+│       │   │   │   └── 📄 page.tsx    # /register
+│       │   │   ├── 📁 forgot-password/
+│       │   │   │   └── 📄 page.tsx    # /forgot-password
+│       │   │   └── 📁 reset-password/
+│       │   │       └── 📄 page.tsx    # /reset-password?token=xxx
+│       │   │
+│       │   ├── 📁 (shop)/             # ROUTE GROUP - Boutique publique
+│       │   │   ├── 📄 layout.tsx      # ShopLayout (Navbar + Footer)
+│       │   │   ├── 📁 shop/
+│       │   │   │   └── 📄 page.tsx    # /shop → HomePage
+│       │   │   ├── 📁 catalog/
+│       │   │   │   ├── 📄 page.tsx    # /catalog → liste produits
+│       │   │   │   └── 📄 loading.tsx # Skeleton catalogue
+│       │   │   ├── 📁 products/
+│       │   │   │   └── 📁 [slug]/
+│       │   │   │       ├── 📄 page.tsx      # /products/[slug] → détail produit
+│       │   │   │       └── 📄 loading.tsx
+│       │   │   ├── 📁 cart/
+│       │   │   │   └── 📄 page.tsx    # /cart
+│       │   │   ├── 📁 checkout/
+│       │   │   │   └── 📄 page.tsx    # /checkout (protégé CLIENT)
+│       │   │   └── 📁 order-confirmation/
+│       │   │       └── 📄 page.tsx    # /order-confirmation?orderId=xxx
+│       │   │
+│       │   ├── 📁 (account)/          # ROUTE GROUP - Compte client (protégé)
+│       │   │   ├── 📄 layout.tsx      # AccountLayout (sidebar compte)
+│       │   │   └── 📁 account/
+│       │   │       ├── 📁 profile/
+│       │   │       │   └── 📄 page.tsx    # /account/profile
+│       │   │       ├── 📁 orders/
+│       │   │       │   ├── 📄 page.tsx    # /account/orders
+│       │   │       │   └── 📁 [id]/
+│       │   │       │       └── 📄 page.tsx # /account/orders/[id]
+│       │   │       ├── 📁 addresses/
+│       │   │       │   └── 📄 page.tsx    # /account/addresses
+│       │   │       └── 📁 wishlist/
+│       │   │           └── 📄 page.tsx    # /account/wishlist
+│       │   │
+│       │   ├── 📁 (admin)/            # ROUTE GROUP - Admin (protégé ADMIN)
+│       │   │   ├── 📄 layout.tsx      # AdminLayout (sidebar + header admin)
+│       │   │   └── 📁 admin/
+│       │   │       ├── 📄 page.tsx             # /admin → Dashboard
+│       │   │       ├── 📄 loading.tsx
+│       │   │       ├── 📁 products/
+│       │   │       │   ├── 📄 page.tsx          # /admin/products
+│       │   │       │   ├── 📁 new/
+│       │   │       │   │   └── 📄 page.tsx      # /admin/products/new
+│       │   │       │   └── 📁 [id]/
+│       │   │       │       ├── 📄 page.tsx      # /admin/products/[id]
+│       │   │       │       └── 📁 edit/
+│       │   │       │           └── 📄 page.tsx  # /admin/products/[id]/edit
+│       │   │       ├── 📁 users/
+│       │   │       │   ├── 📄 page.tsx          # /admin/users
+│       │   │       │   ├── 📁 new/
+│       │   │       │   │   └── 📄 page.tsx      # /admin/users/new
+│       │   │       │   └── 📁 [id]/
+│       │   │       │       └── 📄 page.tsx      # /admin/users/[id]
+│       │   │       ├── 📁 orders/
+│       │   │       │   ├── 📄 page.tsx          # /admin/orders
+│       │   │       │   └── 📁 [id]/
+│       │   │       │       └── 📄 page.tsx      # /admin/orders/[id]
+│       │   │       ├── 📁 reports/
+│       │   │       │   └── 📄 page.tsx          # /admin/reports
+│       │   │       └── 📁 settings/
+│       │   │           └── 📄 page.tsx          # /admin/settings
+│       │   │
+│       │   ├── 📁 (cashier)/          # ROUTE GROUP - Caissier (protégé CASHIER)
+│       │   │   ├── 📄 layout.tsx      # CashierLayout
+│       │   │   └── 📁 cashier/
+│       │   │       ├── 📄 page.tsx           # /cashier → POS
+│       │   │       ├── 📁 transactions/
+│       │   │       │   └── 📄 page.tsx       # /cashier/transactions
+│       │   │       └── 📁 daily-report/
+│       │   │           └── 📄 page.tsx       # /cashier/daily-report
+│       │   │
+│       │   └── 📁 api/                # NEXT.JS API ROUTES (BFF optionnel)
+│       │       ├── 📁 auth/
+│       │       │   └── 📁 [...nextauth]/
+│       │       │       └── 📄 route.ts     # NextAuth.js handler
+│       │       ├── 📁 revalidate/
+│       │       │   └── 📄 route.ts         # Revalidation ISR on-demand
+│       │       └── 📁 upload/
+│       │           └── 📄 route.ts         # Proxy upload vers le backend
+│       │
+│       ├── 📁 components/             # COMPOSANTS RÉUTILISABLES
+│       │   │
+│       │   ├── 📁 ui/                 # Composants UI atomiques
+│       │   │   ├── 📁 button/
+│       │   │   │   ├── 📄 button.tsx
+│       │   │   │   └── 📄 button.types.ts
+│       │   │   ├── 📁 modal/
+│       │   │   │   └── 📄 modal.tsx
+│       │   │   ├── 📁 table/
+│       │   │   │   └── 📄 table.tsx
+│       │   │   ├── 📁 card/
+│       │   │   ├── 📁 input/
+│       │   │   ├── 📁 select/
+│       │   │   ├── 📁 badge/
+│       │   │   ├── 📁 avatar/
+│       │   │   ├── 📁 spinner/
+│       │   │   ├── 📁 alert/
+│       │   │   ├── 📁 pagination/
+│       │   │   ├── 📁 breadcrumb/
+│       │   │   ├── 📁 tooltip/
+│       │   │   ├── 📁 dropdown/
+│       │   │   └── 📁 search-bar/
+│       │   │
+│       │   ├── 📁 layout/             # Composants de mise en page
+│       │   │   ├── 📄 admin-sidebar.tsx
+│       │   │   ├── 📄 admin-header.tsx
+│       │   │   ├── 📄 cashier-header.tsx
+│       │   │   ├── 📄 navbar.tsx          # Navbar boutique (Server Component)
+│       │   │   ├── 📄 footer.tsx          # Footer (Server Component)
+│       │   │   └── 📄 account-sidebar.tsx
+│       │   │
+│       │   ├── 📁 features/           # Composants métier spécifiques
+│       │   │   ├── 📁 products/
+│       │   │   │   ├── 📄 product-card.tsx        # Server Component
+│       │   │   │   ├── 📄 product-grid.tsx         # Server Component
+│       │   │   │   ├── 📄 product-filters.tsx      # 'use client'
+│       │   │   │   ├── 📄 product-form.tsx         # 'use client'
+│       │   │   │   └── 📄 product-image-upload.tsx # 'use client'
+│       │   │   ├── 📁 cart/
+│       │   │   │   ├── 📄 cart-drawer.tsx          # 'use client'
+│       │   │   │   ├── 📄 cart-item.tsx             # 'use client'
+│       │   │   │   └── 📄 cart-summary.tsx
+│       │   │   ├── 📁 checkout/
+│       │   │   │   ├── 📄 checkout-form.tsx        # 'use client'
+│       │   │   │   └── 📄 stripe-payment.tsx       # 'use client'
+│       │   │   ├── 📁 orders/
+│       │   │   │   ├── 📄 order-list.tsx
+│       │   │   │   ├── 📄 order-detail.tsx
+│       │   │   │   └── 📄 order-status-badge.tsx
+│       │   │   ├── 📁 dashboard/
+│       │   │   │   ├── 📄 stats-card.tsx
+│       │   │   │   ├── 📄 revenue-chart.tsx        # 'use client'
+│       │   │   │   └── 📄 recent-orders-table.tsx
+│       │   │   ├── 📁 auth/
+│       │   │   │   ├── 📄 login-form.tsx           # 'use client'
+│       │   │   │   ├── 📄 register-form.tsx        # 'use client'
+│       │   │   │   └── 📄 forgot-password-form.tsx # 'use client'
+│       │   │   └── 📁 pos/
+│       │   │       ├── 📄 pos-terminal.tsx         # 'use client'
+│       │   │       └── 📄 pos-cart.tsx             # 'use client'
+│       │   │
+│       │   └── 📁 providers/          # Context Providers ('use client')
+│       │       ├── 📄 query-provider.tsx   # TanStack Query
+│       │       ├── 📄 auth-provider.tsx    # NextAuth SessionProvider
+│       │       ├── 📄 theme-provider.tsx   # Thème dark/light
+│       │       └── 📄 toast-provider.tsx   # Notifications toast
+│       │
+│       ├── 📁 lib/                    # COUCHE SERVICES & LOGIQUE MÉTIER
+│       │   │
+│       │   ├── 📁 api/                # Clients API (fetch vers NestJS)
+│       │   │   ├── 📄 client.ts           # fetch() configuré (baseURL, headers)
+│       │   │   ├── 📄 auth.api.ts
+│       │   │   ├── 📄 users.api.ts
+│       │   │   ├── 📄 products.api.ts
+│       │   │   ├── 📄 cart.api.ts
+│       │   │   ├── 📄 orders.api.ts
+│       │   │   ├── 📄 payment.api.ts
+│       │   │   ├── 📄 dashboard.api.ts
+│       │   │   ├── 📄 reviews.api.ts
+│       │   │   └── 📄 upload.api.ts
+│       │   │
+│       │   ├── 📁 queries/            # TanStack Query hooks
+│       │   │   ├── 📄 use-products.ts
+│       │   │   ├── 📄 use-orders.ts
+│       │   │   ├── 📄 use-cart.ts
+│       │   │   ├── 📄 use-users.ts
+│       │   │   ├── 📄 use-dashboard.ts
+│       │   │   └── 📄 use-reviews.ts
+│       │   │
+│       │   ├── 📁 store/              # État global Zustand (remplace Redux)
+│       │   │   ├── 📄 cart.store.ts       # Panier (persisté localStorage)
+│       │   │   ├── 📄 ui.store.ts         # État UI (sidebar, modals)
+│       │   │   └── 📄 wishlist.store.ts   # Wishlist (persisté localStorage)
+│       │   │
+│       │   ├── 📁 auth/               # Authentification NextAuth.js v5
+│       │   │   ├── 📄 auth.config.ts      # Configuration NextAuth providers
+│       │   │   ├── 📄 auth.ts             # Instance auth exportée
+│       │   │   └── 📄 session.ts          # Helpers session (getServerSession)
+│       │   │
+│       │   └── 📁 utils/              # Utilitaires
+│       │       ├── 📄 format-currency.ts
+│       │       ├── 📄 format-date.ts
+│       │       ├── 📄 validators.ts
+│       │       ├── 📄 constants.ts
+│       │       └── 📄 helpers.ts
+│       │
+│       ├── 📁 types/                  # TYPES TYPESCRIPT PARTAGÉS
+│       │   ├── 📄 user.types.ts
+│       │   ├── 📄 product.types.ts
+│       │   ├── 📄 order.types.ts
+│       │   ├── 📄 cart.types.ts
+│       │   ├── 📄 payment.types.ts
+│       │   ├── 📄 api.types.ts
+│       │   ├── 📄 next-auth.d.ts      # Extension types NextAuth
+│       │   └── 📄 common.types.ts
+│       │
+│       └── 📁 config/                 # CONFIGURATION FRONTEND
+│           ├── 📄 navigation.config.ts  # Menus de navigation
+│           └── 📄 site.config.ts        # Métadonnées SEO globales
 │
-├── 📁 docs/ # DOCUMENTATION SUPPLÉMENTAIRE
-│ ├── 📄 API.md # Documentation API détaillée
-│ ├── 📄 DATABASE.md # Schéma base de données
-│ ├── 📄 DEPLOYMENT.md # Guide de déploiement
-│ ├── 📄 CONTRIBUTING.md # Guide de contribution
-│ └── 📁 images/ # Captures d'écran docs
+├── 📁 docs/
+│   ├── 📄 API.md
+│   ├── 📄 DATABASE.md
+│   ├── 📄 DEPLOYMENT.md
+│   └── 📄 CONTRIBUTING.md
 │
-├── 📁 scripts/ # SCRIPTS UTILITAIRES
-│ ├── 📄 seed.sh # Script seed base de données
-│ ├── 📄 backup-db.sh # Script backup
-│ └── 📄 deploy.sh # Script déploiement
+├── 📁 scripts/
+│   ├── 📄 seed.sh
+│   ├── 📄 backup-db.sh
+│   └── 📄 deploy.sh
 │
-└── 📁 .github/ # CONFIGURATION GITHUB
-├── 📁 workflows/ # GitHub Actions
-│ ├── 📄 ci.yml # Intégration continue
-│ ├── 📄 deploy-staging.yml # Déploiement staging
-│ └── 📄 deploy-prod.yml # Déploiement production
-├── 📁 ISSUE_TEMPLATE/ # Templates d'issues
-│ ├── 📄 bug_report.md
-│ └── 📄 feature_request.md
-└── 📄 PULL_REQUEST_TEMPLATE.md # Template PR
+└── 📁 .github/
+    ├── 📁 workflows/
+    │   ├── 📄 ci.yml
+    │   ├── 📄 deploy-staging.yml
+    │   └── 📄 deploy-prod.yml
+    └── 📄 PULL_REQUEST_TEMPLATE.md
+```
 
 ---
 
-## 📂 Description des Dossiers Principaux
+## 🔑 Décisions Clés de Migration
 
-### 🖥️ **Server** - Backend NestJS
+### 1. App Router & Route Groups
+Next.js 15 utilise l'**App Router** avec des **route groups** `(nom)` pour partager des layouts sans affecter l'URL :
 
-| Dossier/Fichier | Description |
-|-----------------|-------------|
-| `src/main.ts` | Point d'entrée de l'application, configuration du serveur HTTP, Swagger, CORS |
-| `src/app.module.ts` | Module racine qui importe tous les autres modules |
-| `src/common/` | Code réutilisable dans toute l'application : guards, décorateurs, filtres |
-| `src/config/` | Fichiers de configuration pour les services externes (DB, JWT, Stripe) |
-| `src/database/` | Migrations TypeORM et scripts de seeding |
-| `src/modules/` | Modules fonctionnels organisés par domaine métier |
+| Route Group | URL générées | Layout appliqué |
+|------------|-------------|-----------------|
+| `(auth)` | `/login`, `/register` | `AuthLayout` centré, sans Navbar |
+| `(shop)` | `/shop`, `/catalog`, `/products/[slug]` | `ShopLayout` avec Navbar + Footer |
+| `(account)` | `/account/*` | `AccountLayout` avec sidebar compte |
+| `(admin)` | `/admin/*` | `AdminLayout` avec sidebar admin |
+| `(cashier)` | `/cashier/*` | `CashierLayout` |
 
-### 🎨 **Client** - Frontend React
+### 2. Server Components vs Client Components
 
-| Dossier/Fichier | Description |
-|-----------------|-------------|
-| `src/components/` | Composants React réutilisables classés par catégorie |
-| `src/pages/` | Pages complètes de l'application, une par route |
-| `src/services/` | Couche d'abstraction pour les appels API |
-| `src/hooks/` | Hooks React personnalisés pour la logique réutilisable |
-| `src/store/` | Configuration Redux pour la gestion d'état globale |
-| `src/context/` | Contextes React pour l'état partagé |
-| `src/types/` | Définitions de types TypeScript partagées |
+| Type | Usage | Marqueur |
+|------|-------|----------|
+| **Server Component** | Data fetching, SEO, rendu statique | *(défaut — aucun marqueur)* |
+| **Client Component** | Interactivité, hooks, événements | `'use client'` en tête de fichier |
 
----
+```
+Règle : "Server by default, Client when needed"
 
-## 🗂️ Structure d'un Module NestJS Type
+Server Components → product-card, product-grid, order-list, stats-card, navbar, footer
+Client Components → product-filters, cart-drawer, checkout-form, stripe-payment, login-form, pos-terminal
+```
 
-Chaque module métier dans `server/src/modules/` suit cette structure :
-om-module/
-├── 📄 nom.module.ts # Définition du module, imports, providers
-├── 📄 nom.controller.ts # Routes HTTP et gestion des requêtes
-├── 📄 nom.service.ts # Logique métier, interactions BDD
-├── 📁 dto/ # Data Transfer Objects (validation)
-│ ├── 📄 create-.dto.ts # DTO pour la création
-│ ├── 📄 update-.dto.ts # DTO pour la modification
-│ └── 📄 *-response.dto.ts # DTO pour les réponses
-├── 📁 entities/ # Modèles TypeORM (tables BDD)
-│ └── 📄 *.entity.ts
-├── 📁 enums/ # Énumérations spécifiques au module
-└── 📁 tests/ # Tests unitaires du module
+### 3. Gestion d'état : Redux → Zustand
+Redux Toolkit est remplacé par **Zustand** plus léger et compatible SSR :
 
-## 🧩 Structure d'un Composant React Type
-Les composants complexes suivent cette organisation :
-NomComposant/
-├── 📄 NomComposant.tsx # Logique et rendu du composant
-├── 📄 NomComposant.types.ts # Types et interfaces TypeScript
-├── 📄 NomComposant.styles.ts # Styles spécifiques (CSS-in-JS)
-├── 📄 NomComposant.test.tsx # Tests unitaires
-└── 📄 index.ts # Export public
+```typescript
+// lib/store/cart.store.ts
+import { create } from 'zustand'
+import { persist } from 'zustand/middleware'
 
----
+export const useCartStore = create(persist(
+  (set, get) => ({
+    items: [],
+    addItem: (product) => set((state) => ({ ... })),
+    removeItem: (id) => set((state) => ({ ... })),
+    total: () => get().items.reduce(...)
+  }),
+  { name: 'cart-storage' }
+))
+```
 
-##  Flux de Données dans l'Application
+### 4. Data Fetching : Axios → fetch natif + React Query
 
-### Création d'une Commande - Parcours Complet
-NomComposant/
-├── 📄 NomComposant.tsx # Logique et rendu du composant
-├── 📄 NomComposant.types.ts # Types et interfaces TypeScript
-├── 📄 NomComposant.styles.ts # Styles spécifiques (CSS-in-JS)
-├── 📄 NomComposant.test.tsx # Tests unitaires
-└── 📄 index.ts # Export public
+```typescript
+// Server Component → fetch() natif avec cache Next.js
+async function ProductsPage() {
+  const products = await fetch(`${API_URL}/products`, {
+    next: { revalidate: 60 } // ISR : revalidation toutes les 60s
+  }).then(r => r.json())
+  return <ProductGrid products={products} />
+}
 
-text
+// Client Component → TanStack Query (React Query v5)
+'use client'
+function ProductFilters() {
+  const { data } = useQuery({
+    queryKey: ['products', filters],
+    queryFn: () => productsApi.getAll(filters)
+  })
+}
+```
 
----
+### 5. Authentification : JWT manuel → NextAuth.js v5
+**NextAuth.js v5** gère les sessions, les tokens JWT et les redirections depuis le middleware :
 
-## 🔄 Flux de Données dans l'Application
+```typescript
+// middleware.ts (racine de src/) — protège les routes automatiquement
+export { auth as middleware } from '@/lib/auth/auth'
 
-### Création d'une Commande - Parcours Complet
-FRONTEND (React)
-Client/ → /shop/cart → CartPage.tsx
-├── useCart() → cartSlice (Redux)
-├── Bouton "Commander" → CheckoutPage.tsx
-└── CheckoutPage → payment.service.ts → POST /api/v1/payment
-
-BACKEND (NestJS)
-POST /api/v1/payment
-├── JwtAuthGuard → Vérifie le token
-├── RolesGuard → Vérifie rôle CLIENT
-├── ValidationPipe → Valide create-payment.dto.ts
-└── PaymentController
-└── PaymentService → Stripe API
-└── Retourne client_secret
-
-FRONTEND
-Stripe Elements → Confirme paiement
-└── POST /api/v1/orders
-└── OrdersController
-└── OrdersService
-├── Crée Order + OrderItems
-├── Met à jour stock produits
-└── NotificationsService → Email confirmation
-
-ADMIN (Optionnel)
-GET /api/v1/dashboard → DashboardService
-└── DashboardPage.tsx → Mise à jour temps réel
-
-text
+export const config = {
+  matcher: ['/admin/:path*', '/cashier/:path*', '/account/:path*', '/checkout']
+}
+```
 
 ---
 
-## 📊 Gestion des Rôles et Accès
-
-### Matrice d'Accès aux Routes
+## 🛡️ Matrice d'Accès aux Routes
 
 | Route | Admin | Caissier | Client | Public |
 |-------|-------|----------|--------|--------|
-| `/auth/*` | ✅ | ✅ | ✅ | ✅ |
+| `/login`, `/register` | ✅ | ✅ | ✅ | ✅ |
+| `/shop`, `/catalog`, `/products/*` | ✅ | ✅ | ✅ | ✅ |
+| `/cart` | ✅ | ✅ | ✅ | ✅ |
+| `/checkout` | ✅ | ✅ | ✅ | ❌ |
+| `/account/*` | ✅ | ✅ | ✅ | ❌ |
 | `/admin/*` | ✅ | ❌ | ❌ | ❌ |
 | `/cashier/*` | ✅ | ✅ | ❌ | ❌ |
-| `/shop/*` | ✅ | ✅ | ✅ | ✅ |
-| `/api/v1/products` (GET) | ✅ | ✅ | ✅ | ✅ |
-| `/api/v1/products` (POST) | ✅ | ❌ | ❌ | ❌ |
-| `/api/v1/orders` (GET) | ✅ | ✅ | ✅(own) | ❌ |
-| `/api/v1/users` | ✅ | ❌ | ❌ | ❌ |
+| `POST /api/v1/products` (NestJS) | ✅ | ❌ | ❌ | ❌ |
+
+---
+
+## 📂 Description des Dossiers Clés
+
+### 🗂️ `src/app/` — App Router
+Le cœur de Next.js 15. Chaque dossier = une route. Fichiers spéciaux :
+
+| Fichier | Rôle |
+|---------|------|
+| `layout.tsx` | Layout partagé pour le segment et ses enfants |
+| `page.tsx` | UI unique d'une route (rendu public) |
+| `loading.tsx` | UI de chargement (Suspense automatique) |
+| `error.tsx` | UI d'erreur (Error Boundary automatique) |
+| `not-found.tsx` | UI 404 |
+| `route.ts` | API Route handler (GET, POST, etc.) |
+
+### 🧩 `src/components/` — Composants
+
+| Dossier | Contenu |
+|---------|---------|
+| `ui/` | Composants atomiques génériques (Button, Modal, Table…) |
+| `layout/` | Navbar, Footer, Sidebars |
+| `features/` | Composants métier par domaine (products, cart, orders…) |
+| `providers/` | Wrappers de contexte (QueryProvider, AuthProvider…) |
+
+### 🔧 `src/lib/` — Logique Applicative
+
+| Dossier | Contenu |
+|---------|---------|
+| `api/` | Fonctions fetch vers l'API NestJS |
+| `queries/` | Hooks TanStack Query (useQuery, useMutation) |
+| `store/` | Stores Zustand (panier, UI, wishlist) |
+| `auth/` | Configuration et helpers NextAuth.js v5 |
+| `utils/` | Fonctions utilitaires pures |
+
+---
+
+## 🔄 Flux de Données - Création d'une Commande
+
+```
+BOUTIQUE (Next.js)
+  Client → /cart → CartPage (Server Component + cartStore Zustand)
+    ↓
+  Bouton "Commander" → /checkout → CheckoutPage
+    ├── checkout-form.tsx ('use client')
+    └── stripe-payment.tsx ('use client')
+          ↓
+    fetch POST /api/v1/payment  →  NestJS PaymentController
+          ↓
+    Stripe API → client_secret
+          ↓
+    Stripe Elements → confirmPayment()
+          ↓
+    fetch POST /api/v1/orders  →  NestJS OrdersController
+          ↓
+    → OrdersService (DB + Email confirmation)
+    → redirect vers /order-confirmation?orderId=xxx
+
+ADMIN (Next.js)
+  /admin → DashboardPage (Server Component)
+    └── fetch GET /api/v1/dashboard (avec next: { revalidate: 30 })
+          → revenue-chart.tsx ('use client', polling React Query)
+```
+
+---
+
+## 📦 Stack Technique Frontend
+
+| Catégorie | Ancienne stack | Nouvelle stack |
+|-----------|---------------|----------------|
+| Framework | React 18 + Vite | **Next.js 15 (App Router)** |
+| Routage | React Router v6 | **App Router natif** |
+| Data fetching | Axios | **fetch() natif + TanStack Query v5** |
+| État global | Redux Toolkit | **Zustand v4** |
+| Auth | JWT manuel (localStorage) | **NextAuth.js v5** |
+| Styling | Tailwind CSS | **Tailwind CSS v3** |
+| TypeScript | ✅ | ✅ |
+| Tests | Vitest + RTL | **Jest + RTL + Playwright (E2E)** |
 
 ---
 
 ## 🎯 Bonnes Pratiques de Nommage
 
-### Fichiers Backend
-- **Modules** : `nom.module.ts` (kebab-case)
-- **Contrôleurs** : `nom.controller.ts`
-- **Services** : `nom.service.ts`
-- **DTOs** : `action-ressource.dto.ts` (ex: `create-user.dto.ts`)
-- **Entités** : `nom.entity.ts` (ex: `user.entity.ts`)
+### Fichiers Next.js App Router
+- **Fichiers spéciaux** : `page.tsx`, `layout.tsx`, `loading.tsx`, `error.tsx` (minuscule, imposé par Next.js)
+- **Route dynamique** : `[id]`, `[slug]` (dossier entre crochets)
+- **Route group** : `(nom)` (dossier entre parenthèses, n'affecte pas l'URL)
+- **Catch-all** : `[...slug]` ou `[[...slug]]` pour routes optionnelles
+- **API Route** : `route.ts` (obligatoire pour les handlers API)
 
-### Fichiers Frontend
-- **Composants** : `NomComposant.tsx` (PascalCase)
-- **Pages** : `NomPage.tsx`
-- **Hooks** : `useNom.ts` (camelCase avec prefix use)
-- **Services** : `nom.service.ts`
-- **Types** : `nom.types.ts`
+### Composants et fichiers
+- **Composants** : `product-card.tsx` (kebab-case recommandé avec App Router)
+- **Hooks custom** : `use-products.ts` (kebab-case)
+- **Stores Zustand** : `cart.store.ts`
+- **Clients API** : `products.api.ts`
+- **Types** : `product.types.ts`
 
 ---
 
 ## 📝 Notes Importantes
 
-1. **Les dossiers `node_modules/`** ne sont pas versionnés (dans `.gitignore`)
-2. **Les fichiers `.env`** sont locaux et jamais commités (utiliser `.env.example`)
-3. **Le dossier `uploads/`** contient les fichiers utilisateurs (non versionné)
-4. **Le dossier `logs/`** contient les logs applicatifs (non versionné)
-5. **Le dossier `dist/` ou `build/`** est généré lors du build (non versionné)
-
----
+1. **`'use client'`** doit être placé en **première ligne** des composants interactifs
+2. **Les cookies & headers** ne sont accessibles que côté serveur via `next/headers`
+3. **`middleware.ts`** doit être à la racine de `src/` (ou racine projet si pas de `src/`)
+4. **`.env.local`** pour les variables privées, **`NEXT_PUBLIC_`** pour les variables exposées côté client
+5. **Les dossiers `node_modules/`, `.next/`, `uploads/`, `logs/`** ne sont pas versionnés
+6. **ISR** via `{ next: { revalidate: N } }` dans `fetch()` ou `export const revalidate = N` dans la page
+7. **Les Server Actions** (`'use server'`) peuvent remplacer certains API Routes pour les mutations de formulaires
