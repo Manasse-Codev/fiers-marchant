@@ -1,0 +1,11 @@
+{
+  "name": "cashcoin",
+  "private": true,
+  "workspaces": ["web", "server"],
+  "scripts": {
+    "dev:web": "npm run dev --workspace=web",
+    "dev:server": "npm run start:dev --workspace=server",
+    "build:web": "npm run build --workspace=web",
+    "build:server": "npm run build --workspace=server"
+  }
+}
