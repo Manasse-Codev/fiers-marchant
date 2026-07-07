@@ -8,3 +8,4 @@ build/
 uploads/
 logs/
 .DS_Store
+**/package-lock.json
