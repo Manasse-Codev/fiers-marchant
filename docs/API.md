@@ -1,1 +1,0 @@
-# Documentation API CashCoin

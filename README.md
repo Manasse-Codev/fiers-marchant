@@ -943,3 +943,309 @@ Développé dans le cadre d'un projet collaboratif d'apprentissage.
 
 ---
 
+├── Achitecture.md
+├── docker-compose.yml
+├── docs
+│   ├── API.md
+│   ├── CONTRIBUTING.md
+│   ├── DATABASE.md
+│   └── DEPLOYMENT.md
+├── LICENSE
+├── package.json
+├── README.md
+├── scripts
+│   ├── backup-db.sh
+│   ├── deploy.sh
+│   └── seed.sh
+├── server
+│   ├── logs
+│   ├── package.json
+│   ├── src
+│   │   ├── app.module.ts
+│   │   ├── common
+│   │   │   ├── decorators
+│   │   │   ├── enums
+│   │   │   ├── filters
+│   │   │   ├── guards
+│   │   │   ├── interceptors
+│   │   │   ├── interfaces
+│   │   │   ├── middleware
+│   │   │   ├── pipes
+│   │   │   └── utils
+│   │   ├── config
+│   │   ├── database
+│   │   │   ├── migrations
+│   │   │   └── seeds
+│   │   ├── main.ts
+│   │   └── modules
+│   │       ├── auth
+│   │       │   ├── auth.controller.ts
+│   │       │   ├── auth.module.ts
+│   │       │   ├── auth.service.ts
+│   │       │   ├── dto
+│   │       │   ├── strategies
+│   │       │   └── tests
+│   │       ├── cart
+│   │       │   ├── cart.controller.ts
+│   │       │   ├── cart.module.ts
+│   │       │   ├── cart.service.ts
+│   │       │   ├── dto
+│   │       │   │   ├── create-cart-item.dto.ts
+│   │       │   │   └── update-cart-item.dto.ts
+│   │       │   ├── entities
+│   │       │   │   └── cart-item.entity.ts
+│   │       │   └── tests
+│   │       ├── dashboard
+│   │       │   ├── dashboard.controller.ts
+│   │       │   ├── dashboard.module.ts
+│   │       │   ├── dashboard.service.ts
+│   │       │   ├── dto
+│   │       │   └── tests
+│   │       ├── notifications
+│   │       │   ├── notifications.controller.ts
+│   │       │   ├── notifications.module.ts
+│   │       │   ├── notifications.service.ts
+│   │       │   ├── templates
+│   │       │   └── tests
+│   │       ├── orders
+│   │       │   ├── dto
+│   │       │   │   ├── create-order.dto.ts
+│   │       │   │   └── update-order.dto.ts
+│   │       │   ├── entities
+│   │       │   │   └── order.entity.ts
+│   │       │   ├── orders.controller.ts
+│   │       │   ├── orders.module.ts
+│   │       │   ├── orders.service.ts
+│   │       │   └── tests
+│   │       ├── payment
+│   │       │   ├── dto
+│   │       │   ├── payment.controller.ts
+│   │       │   ├── payment.module.ts
+│   │       │   ├── payment.service.ts
+│   │       │   ├── tests
+│   │       │   └── webhooks
+│   │       ├── products
+│   │       │   ├── dto
+│   │       │   │   ├── create-product.dto.ts
+│   │       │   │   └── update-product.dto.ts
+│   │       │   ├── entities
+│   │       │   │   └── product.entity.ts
+│   │       │   ├── products.controller.ts
+│   │       │   ├── products.module.ts
+│   │       │   ├── products.service.ts
+│   │       │   └── tests
+│   │       ├── reviews
+│   │       │   ├── dto
+│   │       │   │   ├── create-review.dto.ts
+│   │       │   │   └── update-review.dto.ts
+│   │       │   ├── entities
+│   │       │   │   └── review.entity.ts
+│   │       │   ├── reviews.controller.ts
+│   │       │   ├── reviews.module.ts
+│   │       │   ├── reviews.service.ts
+│   │       │   └── tests
+│   │       └── users
+│   │           ├── dto
+│   │           │   ├── create-user.dto.ts
+│   │           │   └── update-user.dto.ts
+│   │           ├── entities
+│   │           │   └── user.entity.ts
+│   │           ├── tests
+│   │           ├── users.controller.ts
+│   │           ├── users.module.ts
+│   │           └── users.service.ts
+│   ├── test
+│   └── uploads
+│       ├── avatars
+│       └── products
+└── web
+    ├── AGENTS.md
+    ├── ✅ App Router directories created
+    ├── CLAUDE.md
+    ├── ✅ Component & lib directories created
+    ├── echo
+    ├── eslint.config.mjs
+    ├── middleware.ts
+    ├── next.config.ts
+    ├── next-env.d.ts
+    ├── package.json
+    ├── package-lock.json
+    ├── postcss.config.mjs
+    ├── public
+    │   ├── file.svg
+    │   ├── globe.svg
+    │   ├── next.svg
+    │   ├── vercel.svg
+    │   └── window.svg
+    ├── README.md
+    ├── ✅ Server directories created
+    ├── src
+    │   ├── app
+    │   │   ├── (account)
+    │   │   │   ├── account
+    │   │   │   │   ├── addresses
+    │   │   │   │   │   └── page.tsx
+    │   │   │   │   ├── orders
+    │   │   │   │   │   ├── [id]
+    │   │   │   │   │   │   └── page.tsx
+    │   │   │   │   │   └── page.tsx
+    │   │   │   │   ├── profile
+    │   │   │   │   │   └── page.tsx
+    │   │   │   │   └── wishlist
+    │   │   │   │       └── page.tsx
+    │   │   │   └── layout.tsx
+    │   │   ├── (admin)
+    │   │   │   ├── admin
+    │   │   │   │   ├── orders
+    │   │   │   │   │   ├── [id]
+    │   │   │   │   │   │   └── page.tsx
+    │   │   │   │   │   └── page.tsx
+    │   │   │   │   ├── page.tsx
+    │   │   │   │   ├── products
+    │   │   │   │   │   ├── [id]
+    │   │   │   │   │   │   ├── edit
+    │   │   │   │   │   │   │   └── page.tsx
+    │   │   │   │   │   │   └── page.tsx
+    │   │   │   │   │   ├── new
+    │   │   │   │   │   │   └── page.tsx
+    │   │   │   │   │   └── page.tsx
+    │   │   │   │   ├── reports
+    │   │   │   │   │   └── page.tsx
+    │   │   │   │   ├── settings
+    │   │   │   │   │   └── page.tsx
+    │   │   │   │   └── users
+    │   │   │   │       ├── [id]
+    │   │   │   │       │   └── page.tsx
+    │   │   │   │       ├── new
+    │   │   │   │       │   └── page.tsx
+    │   │   │   │       └── page.tsx
+    │   │   │   └── layout.tsx
+    │   │   ├── api
+    │   │   │   ├── auth
+    │   │   │   │   └── [...nextauth]
+    │   │   │   │       └── route.ts
+    │   │   │   ├── revalidate
+    │   │   │   │   └── route.ts
+    │   │   │   └── upload
+    │   │   │       └── route.ts
+    │   │   ├── (auth)
+    │   │   │   ├── forgot-password
+    │   │   │   │   └── page.tsx
+    │   │   │   ├── layout.tsx
+    │   │   │   ├── login
+    │   │   │   │   └── page.tsx
+    │   │   │   ├── register
+    │   │   │   │   └── page.tsx
+    │   │   │   └── reset-password
+    │   │   │       └── page.tsx
+    │   │   ├── (cashier)
+    │   │   │   ├── cashier
+    │   │   │   │   ├── daily-report
+    │   │   │   │   │   └── page.tsx
+    │   │   │   │   ├── page.tsx
+    │   │   │   │   └── transactions
+    │   │   │   │       └── page.tsx
+    │   │   │   └── layout.tsx
+    │   │   ├── error.tsx
+    │   │   ├── favicon.ico
+    │   │   ├── globals.css
+    │   │   ├── layout.tsx
+    │   │   ├── not-found.tsx
+    │   │   ├── page.tsx
+    │   │   └── (shop)
+    │   │       ├── cart
+    │   │       │   └── page.tsx
+    │   │       ├── catalog
+    │   │       │   ├── loading.tsx
+    │   │       │   └── page.tsx
+    │   │       ├── checkout
+    │   │       │   └── page.tsx
+    │   │       ├── layout.tsx
+    │   │       ├── order-confirmation
+    │   │       │   └── page.tsx
+    │   │       ├── products
+    │   │       │   └── [slug]
+    │   │       │       └── page.tsx
+    │   │       └── shop
+    │   │           └── page.tsx
+    │   ├── components
+    │   │   ├── features
+    │   │   │   ├── auth
+    │   │   │   │   ├── forgot-password-form.tsx
+    │   │   │   │   ├── login-form.tsx
+    │   │   │   │   └── register-form.tsx
+    │   │   │   ├── cart
+    │   │   │   ├── checkout
+    │   │   │   │   └── checkout-form.tsx
+    │   │   │   ├── dashboard
+    │   │   │   │   ├── recent-orders-table.tsx
+    │   │   │   │   ├── revenue-chart.tsx
+    │   │   │   │   └── stats-card.tsx
+    │   │   │   ├── orders
+    │   │   │   ├── pos
+    │   │   │   └── products
+    │   │   │       ├── product-card.tsx
+    │   │   │       ├── product-filters.tsx
+    │   │   │       └── product-grid.tsx
+    │   │   ├── layout
+    │   │   │   ├── account-sidebar.tsx
+    │   │   │   ├── admin-header.tsx
+    │   │   │   ├── admin-sidebar.tsx
+    │   │   │   ├── cashier-header.tsx
+    │   │   │   ├── footer.tsx
+    │   │   │   └── navbar.tsx
+    │   │   ├── providers
+    │   │   │   ├── auth-provider.tsx
+    │   │   │   ├── query-provider.tsx
+    │   │   │   ├── theme-provider.tsx
+    │   │   │   └── toast-provider.tsx
+    │   │   └── ui
+    │   │       ├── alert
+    │   │       ├── avatar
+    │   │       ├── badge
+    │   │       ├── breadcrumb
+    │   │       ├── button
+    │   │       ├── card
+    │   │       ├── dropdown
+    │   │       ├── input
+    │   │       ├── modal
+    │   │       ├── pagination
+    │   │       ├── search-bar
+    │   │       ├── select
+    │   │       ├── spinner
+    │   │       ├── table
+    │   │       └── tooltip
+    │   ├── config
+    │   │   ├── navigation.config.ts
+    │   │   └── site.config.ts
+    │   ├── lib
+    │   │   ├── api
+    │   │   │   ├── client.ts
+    │   │   │   ├── dashboard.api.ts
+    │   │   │   ├── orders.api.ts
+    │   │   │   ├── payment.api.ts
+    │   │   │   ├── products.api.ts
+    │   │   │   └── users.api.ts
+    │   │   ├── auth
+    │   │   │   ├── auth.config.ts
+    │   │   │   ├── auth.ts
+    │   │   │   └── session.ts
+    │   │   ├── queries
+    │   │   ├── store
+    │   │   │   ├── cart.store.ts
+    │   │   │   ├── ui.store.ts
+    │   │   │   └── wishlist.store.ts
+    │   │   └── utils
+    │   │       ├── constants.ts
+    │   │       ├── format-currency.ts
+    │   │       └── format-date.ts
+    │   └── types
+    │       ├── api.types.ts
+    │       ├── cart.types.ts
+    │       ├── next-auth.d.ts
+    │       ├── order.types.ts
+    │       ├── product.types.ts
+    │       └── user.types.ts
+    └── tsconfig.json
+
+
