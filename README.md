@@ -1,1251 +1,1063 @@
-mon projet dev
+# CashCoin
 
-### Principes Architecturaux
+Application e-commerce et point de vente construite avec une architecture unifiee **Next.js 15 App Router**.
 
-- **Séparation des Responsabilités** : Chaque module est autonome
-- **Injection de Dépendances** : Couplage faible entre les composants
-- **DTOs et Validation** : Données validées à chaque couche
-- **Gestion d'Erreurs Centralisée** : Réponses cohérentes dans toute l'API
-- **Logging Structuré** : Traçabilité complète des actions
+Le projet regroupe dans une seule application :
 
-## 👥 Rôles Utilisateurs
-
-### 👑 Administrateur
-
-**Responsabilités :** Gestion complète de la plateforme
-
-**Capacités :**
-- Gestion du catalogue produits (création, modification, suppression)
-- Administration des utilisateurs et attribution des rôles
-- Supervision de toutes les commandes et transactions
-- Accès aux tableaux de bord et statistiques avancées
-- Configuration des paramètres système
-- Gestion des promotions et codes de réduction
-- Export de rapports détaillés
-- Gestion des remboursements et litiges
-
-**Interface dédiée :** Dashboard administrateur avec :
-- Vue d'ensemble des métriques clés
-- Graphiques de performance
-- Outils de gestion en masse
-- Logs d'activité système
-
-### 💰 Caissier
-
-**Responsabilités :** Gestion du point de vente
-
-**Capacités :**
-- Création de commandes pour les clients en boutique
-- Consultation du catalogue et des stocks en temps réel
-- Encaissement et traitement des paiements
-- Gestion du panier client
-- Historique des transactions de la journée
-- Recherche rapide de produits
-- Application de remises manuelles
-- Impression de tickets de caisse
-
-**Restrictions :**
-- Aucun accès à la gestion des utilisateurs
-- Pas de modification du catalogue
-- Pas de suppression de commandes validées
-- Pas d'accès aux rapports globaux
-
-**Interface dédiée :** Terminal point de vente avec :
-- Interface de recherche rapide
-- Caisse enregistreuse virtuelle
-- Affichage clair des montants
-- Mode plein écran optimisé
-
-### 🛒 Client
-
-**Responsabilités :** Achats en ligne
-
-**Capacités :**
-- Navigation dans le catalogue avec filtres avancés
-- Consultation des fiches produits détaillées
-- Gestion du panier d'achat personnel
-- Passage de commande avec paiement sécurisé
-- Suivi en temps réel du statut des commandes
-- Gestion du compte personnel
-- Historique complet des achats
-- Ajout d'avis et évaluations sur les produits
-
-**Restrictions :**
-- Pas d'accès aux interfaces d'administration
-- Pas de visualisation des autres clients
-- Limité à ses propres commandes et données
-
-**Interface dédiée :** Site e-commerce avec :
-- Design moderne et épuré
-- Navigation intuitive par catégories
-- Processus de commande en 3 étapes
-- Espace client personnalisé
-
-## ✨ Fonctionnalités Détaillées
-
-### 🔐 Système d'Authentification
-
-- Inscription avec validation par email
-- Connexion sécurisée avec JWT
-- Système de refresh tokens pour sessions persistantes
-- Réinitialisation de mot de passe sécurisée
-- Protection contre les attaques par force brute
-- Verrouillage temporaire après échecs répétés
-- Double authentification (optionnelle)
-- Sessions multi-appareils gérées
-
-### 📦 Gestion des Produits
-
-**Catalogue :**
-- Fiches produits riches avec images multiples
-- Catégorisation hiérarchique (type, origine, saveur)
-- Variantes de produits (format, poids, conditionnement)
-- Prix dynamiques avec gestion des promotions
-- Stock en temps réel avec alertes de réapprovisionnement
-- Produits associés et recommandations
-
-**Recherche :**
-- Recherche full-text dans tout le catalogue
-- Filtres multicritères combinables
-- Tri par prix, popularité, nouveauté
-- Suggestions automatiques
-- Historique de recherche personnel
-
-**Médias :**
-- Galerie d'images par produit
-- Upload multiple avec prévisualisation
-- Redimensionnement automatique
-- Images optimisées pour le web
-
-### 🛒 Workflow de Commande
-
-**Processus d'Achat :**
-1. Sélection des produits et ajout au panier
-2. Validation du panier et calcul des totaux
-3. Saisie de l'adresse de livraison
-4. Choix du mode de livraison
-5. Application des codes promo
-6. Paiement sécurisé
-7. Confirmation et récapitulatif
-
-**États de Commande :**
-- **En attente** : Commande créée, paiement en cours
-- **Confirmée** : Paiement validé
-- **En préparation** : Équipe logistique mobilisée
-- **Expédiée** : Colis remis au transporteur
-- **Livrée** : Réception confirmée par le client
-- **Annulée** : Avant expédition uniquement
-
-**Gestion des Paniers :**
-- Sauvegarde automatique
-- Synchronisation multi-appareils
-- Récupération de panier abandonné
-- Fusion des paniers invité/client après connexion
-
-### 💳 Système de Paiement
-
-**Moyens de Paiement :**
-- Carte bancaire (Stripe)
-- Portefeuilles électroniques (Apple Pay, Google Pay)
-- Virement bancaire (confirmation manuelle)
-
-**Fonctionnalités Stripe :**
-- Paiement sans redirection (Stripe Elements)
-- Validation en temps réel des cartes
-- Gestion des erreurs de paiement
-- Remboursements partiels ou totaux
-- Webhooks pour synchronisation automatique
-- Mode test avec cartes factices
-
-**Sécurité :**
-- Conformité PCI-DSS via Stripe
-- Aucune donnée bancaire stockée
-- Chiffrement de bout en bout
-- Détection de fraude automatique
-
-### 📊 Tableaux de Bord
-
-**Vue Administrateur :**
-- Chiffre d'affaires en temps réel
-- Nombre de commandes par statut
-- Produits les plus vendus
-- Taux de conversion visiteur/acheteur
-- Performance par catégorie
-- Graphiques d'évolution temporelle
-- Export de rapports (PDF, Excel)
-
-**Vue Caissier :**
-- Total des ventes de la journée
-- Nombre de transactions effectuées
-- Panier moyen
-- Produits les plus vendus aujourd'hui
-- Performance personnelle
-
-### 🔔 Notifications
-
-**Canaux :**
-- Email transactionnels
-- Notifications in-app
-- Alertes en temps réel (WebSocket)
-
-**Événements Notifiés :**
-- Confirmation de commande
-- Changement de statut de commande
-- Récupération de mot de passe
-- Promotion spéciale
-- Alerte de stock bas (admin)
-
-## 🛠 Stack Technique
-
-### Backend
-
-| Technologie | Version | Rôle |
-|-------------|---------|------|
-| NestJS | 10.x | Framework backend modulaire |
-| TypeScript | 5.x | Langage de programmation |
-| PostgreSQL | 15 | Base de données relationnelle |
-| TypeORM | 0.3.x | ORM pour PostgreSQL |
-| Passport | - | Stratégies d'authentification |
-| JWT | - | Tokens d'authentification |
-| Stripe | - | Paiement en ligne |
-| Swagger | - | Documentation API interactive |
-| Nodemailer | - | Envoi d'emails |
-| Multer | - | Gestion des uploads |
-| Winston | - | Logging avancé |
-| Jest | - | Framework de test |
-
-### Frontend
-
-| Technologie | Version | Rôle |
-|-------------|---------|------|
-| React | 18.x | Interface utilisateur |
-| TypeScript | 5.x | Typage statique |
-| Redux Toolkit | - | Gestion d'état global |
-| React Router | 6.x | Navigation |
-| Material-UI | 5.x | Composants UI |
-| React Hook Form | - | Gestion des formulaires |
-| React Query | - | Requêtes et cache |
-| Axios | - | Client HTTP |
-| Vite | - | Build tool |
-| Tailwind CSS | - | Styles utilitaires |
-
-### DevOps & Outils
-
-| Outil | Usage |
-|-------|-------|
-| Docker | Conteneurisation |
-| Docker Compose | Orchestration multi-conteneurs |
-| GitHub Actions | CI/CD |
-| ESLint | Linting |
-| Prettier | Formatage de code |
-| Husky | Hooks Git |
-| Commitlint | Validation des commits |
-
-## 📋 Prérequis Techniques
-
-### Environnement de Développement
-
-- **Système d'exploitation** : Windows 10+, macOS 11+, Linux (Ubuntu 20.04+)
-- **Node.js** : Version 18 LTS ou supérieure
-- **npm** : Version 9+ ou yarn 1.22+
-- **PostgreSQL** : Version 14 ou supérieure
-- **Git** : Version 2.30+
-
-### Outils Recommandés
-
-- **IDE** : Visual Studio Code avec extensions :
-  - ESLint
-  - Prettier
-  - Thunder Client (tests API)
-  - PostgreSQL
-  - Docker
-- **Navigateur** : Chrome/Firefox avec React DevTools
-- **Terminal** : Windows Terminal, iTerm2, ou intégré VS Code
-- **Postman** ou **Insomnia** pour tester l'API
-- **pgAdmin** ou **DBeaver** pour la base de données
-- **Docker Desktop** pour la conteneurisation
-
-### Comptes Externes Nécessaires
-
-- **GitHub** : Pour le versionnement et la collaboration
-- **Stripe** : Compte test gratuit pour les paiements
-- **Service Email** : SendGrid (gratuit jusqu'à 100 emails/jour) ou Mailtrap pour les tests
-
-## 🚀 Guide d'Installation
-
-### Installation Rapide (Docker)
-
-**Étape 1 : Cloner le projet**
-- Récupérer le code source depuis le repository GitHub
-- Se placer dans le dossier du projet
-
-**Étape 2 : Configurer l'environnement**
-- Copier le fichier d'exemple de configuration
-- Ajuster les variables si nécessaire
-
-**Étape 3 : Lancer avec Docker**
-- Exécuter la commande Docker Compose
-- Attendre le téléchargement des images et le démarrage
-- L'application est disponible sur les ports configurés
-
-**Étape 4 : Initialiser les données**
-- Exécuter le script de seed automatique
-- Les comptes de test sont créés
-
-### Installation Manuelle
-
-**Étape 1 : Préparer l'environnement**
-- Installer Node.js et npm
-- Installer PostgreSQL
-- Créer une base de données dédiée
-
-**Étape 2 : Installer les dépendances**
-- Installer les packages du backend
-- Installer les packages du frontend
-
-**Étape 3 : Configuration**
-- Créer le fichier de variables d'environnement
-- Renseigner les identifiants de base de données
-- Configurer les clés Stripe (mode test)
-- Définir les secrets JWT
-
-**Étape 4 : Base de données**
-- Exécuter les migrations pour créer les tables
-- Lancer les seeds pour les données de test
-
-**Étape 5 : Démarrer l'application**
-- Lancer le serveur backend en mode développement
-- Lancer le serveur frontend en mode développement
-- Accéder aux différentes interfaces
-
-### Vérification de l'Installation
-
-- **Backend API** : Accéder à la documentation Swagger
-- **Frontend Client** : Accéder à la boutique en ligne
-- **Dashboard Admin** : Se connecter avec le compte administrateur
-- **Terminal Caissier** : Se connecter avec le compte caissier
-
-## ⚙️ Configuration
-
-### Variables d'Environnement Essentielles
-
-**Application**
-- Définit l'environnement (développement, production, test)
-- Configure le port du serveur
-- Définit le préfixe des routes API
-
-**Base de Données**
-- Hôte de la base de données (localhost ou service Docker)
-- Port PostgreSQL (5432 par défaut)
-- Identifiants de connexion
-- Nom de la base de données
-
-**Authentification JWT**
-- Clé secrète pour signer les tokens (doit être longue et aléatoire)
-- Durée de validité du token d'accès
-- Clé secrète pour les refresh tokens
-- Durée de validité du refresh token
-
-**Stripe**
-- Clé secrète API (commence par sk_test_ en mode test)
-- Secret pour les webhooks
-- Devise par défaut (EUR, USD, etc.)
-
-**Email (Optionnel)**
-- Serveur SMTP
-- Port SMTP
-- Identifiants du compte d'envoi
-
-**Upload de Fichiers**
-- Taille maximale des fichiers
-- Dossier de destination des uploads
-
-**URL Frontend**
-- Pour la configuration CORS
-
-### Comptes de Test Préconfigurés
-
-Après l'exécution du seed, trois comptes sont disponibles :
-
-| Rôle | Email | Mot de passe | Accès |
-|------|-------|--------------|-------|
-| Administrateur | admin@teashop.com | Admin123! | Toutes les interfaces admin |
-| Caissier | cashier@teashop.com | Cashier123! | Interface point de vente |
-| Client | client@teashop.com | Client123! | Boutique en ligne |
-
-**⚠️ Important :** Ces comptes sont pour le développement uniquement. En production, ils doivent être désactivés ou supprimés.
-
-## 📁 Structure du Projet
-
-### Organisation Générale
-
-Le projet suit une structure monorepo avec deux applications principales :
-
-**Dossier Racine**
-- Configuration Docker Compose
-- Fichiers de configuration globaux
-- Documentation principale
-- Scripts CI/CD
-
-**Application Backend (server/)**
-- Code source TypeScript dans un dossier dédié
-- Tests unitaires et end-to-end
-- Migrations de base de données
-- Scripts de seeding
-
-**Application Frontend (client/)**
-- Code source React avec TypeScript
-- Tests unitaires et d'intégration
-- Ressources statiques (images, polices)
-- Configuration de build
-
-### Structure Backend Détaillée
-
-**Modules Communs (common/)**
-- Décorateurs personnalisés pour extraire l'utilisateur courant
-- Guards d'authentification et d'autorisation
-- Filtres d'exception globaux
-- Intercepteurs pour transformer les réponses
-- Pipes de validation
-- Utilitaires partagés
-
-**Modules Fonctionnels**
-Chaque entité métier possède son module autonome avec :
-- Contrôleur : Définit les routes et les méthodes HTTP
-- Service : Logique métier
-- Module : Configuration et dépendances
-- DTOs : Validation des données entrantes
-- Entités : Mapping base de données
-
-**Modules Principaux :**
-- **Authentification** : Login, register, refresh tokens
-- **Utilisateurs** : CRUD utilisateurs, gestion des rôles
-- **Produits** : Gestion du catalogue
-- **Commandes** : Workflow complet de commande
-- **Paiement** : Intégration Stripe
-- **Dashboard** : Statistiques et rapports
-
-### Structure Frontend Détaillée
-
-**Composants Communs**
-- Boutons, modales, tableaux réutilisables
-- Éléments de formulaire standardisés
-- Indicateurs de chargement et d'erreur
-
-**Layouts par Rôle**
-- Layout administrateur avec navigation spécifique
-- Layout caissier optimisé pour point de vente
-- Layout client e-commerce classique
-
-**Guards de Route**
-- Protection des routes administrateur
-- Protection des routes caissier
-- Redirection automatique selon le rôle
-
-**Pages Organisées par Domaine**
-- Pages administrateur : dashboard, gestion produits, gestion utilisateurs
-- Pages caissier : point de vente, historique transactions
-- Pages client : catalogue, panier, profil, commandes
-
-**Services API**
-- Client HTTP configuré avec Axios
-- Intercepteurs pour les tokens JWT
-- Gestion des erreurs centralisée
-
-**Store Redux**
-- Slices par domaine fonctionnel
-- Sélecteurs optimisés
-- Middleware pour les effets de bord
-
-## 📚 Documentation API
-
-### Accès à la Documentation
-
-La documentation interactive est générée automatiquement avec Swagger/OpenAPI :
-- Accessible via le navigateur à l'URL de l'API
-- Interface interactive permettant de tester les endpoints
-- Schémas de données détaillés
-- Authentification directement testable
-
-### Organisation des Endpoints
-
-**Tag Authentification**
-- Inscription d'un nouvel utilisateur
-- Connexion et obtention des tokens
-- Rafraîchissement du token d'accès
-- Demande de réinitialisation de mot de passe
-- Réinitialisation effective du mot de passe
-
-**Tag Utilisateurs**
-- Liste paginée des utilisateurs (admin)
-- Détail d'un utilisateur spécifique
-- Création d'utilisateur (admin)
-- Modification des informations utilisateur
-- Suppression logique d'un utilisateur
-- Changement de rôle (admin)
-
-**Tag Produits**
-- Liste des produits avec filtres et pagination
-- Recherche textuelle dans le catalogue
-- Détail complet d'un produit
-- Création de produit (admin)
-- Mise à jour des informations produit (admin)
-- Gestion des images produit
-- Suppression/archivage de produit (admin)
-
-**Tag Commandes**
-- Création de commande (client)
-- Création pour un client (caissier)
-- Liste des commandes avec filtres
-- Détail d'une commande spécifique
-- Mise à jour du statut (admin/caissier)
-- Annulation de commande
-
-**Tag Paiement**
-- Création d'une intention de paiement Stripe
-- Confirmation du paiement
-- Récupération des méthodes de paiement sauvegardées
-- Historique des transactions
-
-**Tag Dashboard**
-- Statistiques générales (chiffre d'affaires, commandes)
-- Données pour graphiques temporels
-- Top produits
-- Métriques de performance
-
-### Authentification des Requêtes
-
-- Endpoints publics : Accessibles sans authentification
-- Endpoints protégés : Nécessitent un token JWT valide
-- Le token doit être inclus dans le header Authorization
-- Format attendu : "Bearer [token]"
-
-### Codes de Réponse Standards
-
-- **200** : Succès, données retournées
-- **201** : Création réussie
-- **400** : Erreur de validation des données
-- **401** : Non authentifié
-- **403** : Rôle insuffisant
-- **404** : Ressource non trouvée
-- **409** : Conflit (email déjà utilisé, etc.)
-- **422** : Données valides mais traitement impossible
-- **500** : Erreur serveur interne
-
-### Pagination et Filtrage
-
-- Pagination avec numéro de page et taille
-- Tri sur les champs disponibles
-- Filtres combinables avec opérateurs
-- Métadonnées de pagination dans les réponses
-
-## 🗄 Base de Données
-
-### Modèle de Données
-
-**Table Utilisateurs**
-- Identifiant unique UUID
-- Email (unique)
-- Mot de passe hashé (bcrypt)
-- Nom complet
-- Rôle (enum : admin, cashier, customer)
-- Avatar (URL)
-- Statut actif/inactif
-- Dates de création et modification
-- Date de dernière connexion
-
-**Table Produits**
-- Identifiant unique UUID
-- Nom du produit
-- Description détaillée
-- Prix unitaire
-- Stock disponible
-- Catégorie
-- Images (tableau d'URLs)
-- Statut actif/inactif
-- Créateur (référence utilisateur)
-- Dates de création et modification
-
-**Table Commandes**
-- Identifiant unique UUID
-- Client (référence utilisateur)
-- Statut de la commande (enum)
-- Montant total
-- Adresse de livraison (JSON)
-- Identifiant de paiement Stripe
-- Notes éventuelles
-- Créateur (référence utilisateur)
-- Dates de création et modification
-
-**Table Lignes de Commande**
-- Identifiant unique UUID
-- Commande parente (référence)
-- Produit commandé (référence)
-- Quantité
-- Prix unitaire au moment de la commande
-- Prix total de la ligne
-
-**Table Paiements**
-- Identifiant unique UUID
-- Commande associée (référence)
-- Identifiant Stripe
-- Montant
-- Devise
-- Statut du paiement
-- Méthode de paiement
-- Dates de création et modification
-
-### Relations
-
-- Un utilisateur peut avoir plusieurs commandes
-- Une commande appartient à un utilisateur
-- Une commande contient plusieurs lignes
-- Une ligne de commande référence un produit
-- Un paiement est lié à une commande
-- Un produit peut être créé par un administrateur
-
-### Migrations
-
-Les migrations sont versionnées et permettent de :
-- Suivre l'évolution du schéma de base de données
-- Revenir à un état antérieur si nécessaire
-- Collaborer sans conflits sur la structure
-- Déployer de manière fiable en production
-
-### Seeds (Données de Test)
-
-Les scripts de seed créent un environnement de test complet :
-- 3 utilisateurs avec rôles distincts
-- 15-20 produits dans différentes catégories
-- Quelques commandes exemple
-- Données cohérentes pour les démonstrations
-
-## 🔒 Mesures de Sécurité
-
-### Authentification et Sessions
-
-- Mots de passe hashés avec bcrypt (sel automatique)
-- Tokens JWT signés avec secret fort
-- Refresh tokens avec rotation automatique
-- Expiration configurable des sessions
-- Liste noire de tokens révoqués
-
-### Autorisation Fine
-
-- Guards basés sur les rôles
-- Vérification à chaque requête protégée
-- Impossibilité d'accéder aux ressources d'autres utilisateurs
-- Principe du moindre privilège
-
-### Protection des Données
-
-- Validation stricte de toutes les entrées (class-validator)
-- Pas de données bancaires stockées (délégation à Stripe)
-- Données sensibles chiffrées
-- Masquage des informations critiques dans les logs
-
-### Sécurité HTTP
-
-- Headers de sécurité avec Helmet
-- CORS configuré restrictivement
-- Rate limiting sur les endpoints sensibles
-- Protection CSRF sur les formulaires
-
-### Base de Données
-
-- Requêtes paramétrées (protection injection SQL)
-- Connexions poolées et limitées
-- Backups automatiques (production)
-- Accès restreint par réseau
-
-### Bonnes Pratiques
-
-- Audit trail pour les actions critiques
-- Validation des fichiers uploadés (type, taille, contenu)
-- Sanitization des entrées utilisateur
-- Gestion sécurisée des erreurs (pas de stack trace exposée)
-
-## 🧪 Stratégie de Test
-
-### Types de Tests
-
-**Tests Unitaires**
-- Couvrent la logique métier des services
-- Mocks pour les dépendances externes
-- Exécutés automatiquement à chaque commit
-- Objectif : 85% de couverture minimum
-
-**Tests d'Intégration**
-- Testent les interactions entre modules
-- Base de données de test dédiée
-- Vérifient le comportement complet des endpoints
-
-**Tests End-to-End**
-- Simulent des parcours utilisateur complets
-- Scénarios : création de compte, achat, gestion admin
-- Exécutés avant chaque déploiement
-
-**Tests de Performance**
-- Vérifient les temps de réponse sous charge
-- Identifient les goulots d'étranglement
-- Exécutés périodiquement
-
-### Scénarios de Test Critiques
-
-**Parcours Client :**
-- Navigation dans le catalogue avec filtres
-- Ajout au panier et modification quantités
-- Processus de commande complet
-- Paiement réussi
-- Consultation de l'historique
-
-**Parcours Caissier :**
-- Recherche de produit
-- Création de commande pour un client
-- Encaissement
-- Consultation des transactions du jour
-
-**Parcours Administrateur :**
-- Création de produit avec images
-- Modification de stock
-- Gestion des utilisateurs
-- Consultation des statistiques
-
-**Cas d'Erreur :**
-- Tentative d'accès non autorisé
-- Données invalides
-- Paiement refusé
-- Stock insuffisant
-
-### Outils de Test
-
-- **Jest** : Framework de test principal
-- **Supertest** : Tests HTTP pour l'API
-- **React Testing Library** : Tests composants React
-- **Cypress** (optionnel) : Tests E2E avancés
-
-## 🚢 Déploiement
-
-### Environnements
-
-**Développement Local**
-- Base de données locale ou conteneurisée
-- Hot reload activé
-- Logs détaillés
-- Mode debug
-
-**Staging/Préproduction**
-- Environnement identique à la production
-- Données anonymisées
-- Tests de charge et de performance
-- Validation avant mise en production
-
-**Production**
-- Infrastructure scalable
-- Base de données avec réplication
-- Logs agrégés
-- Monitoring et alertes
-- Backups automatiques
-
-### Stratégie de Déploiement
-
-- Build automatisé via CI/CD
-- Tests exécutés avant déploiement
-- Déploiement progressif (rolling update)
-- Rollback automatique en cas d'échec
-
-### Conteneurisation
-
-- Images Docker optimisées multi-stage
-- Docker Compose pour le développement
-- Orchestration Kubernetes (optionnel)
-- Registry privé pour les images
-
-### Monitoring et Logging
-
-- Logs structurés au format JSON
-- Agrégation de logs (ELK, Datadog, etc.)
-- Métriques de performance
-- Alertes sur anomalies
-
-## 🤝 Guide de Contribution
-
-### Pour Commencer
-
-1. Lire attentivement ce README
-2. Installer le projet en local
-3. Explorer la documentation Swagger
-4. Comprendre les différents rôles et leurs permissions
-5. Choisir une issue dans le project board
-
-### Workflow de Développement
-
-**Branches**
-- La branche principale est protégée
-- Créer une branche depuis develop pour chaque fonctionnalité
-- Nommer les branches selon le type : feature/, bugfix/, docs/
-
-**Conventions de Commits**
-Le projet suit la convention des commits conventionnels :
-- **feat:** Nouvelle fonctionnalité
-- **fix:** Correction de bug
-- **docs:** Modification de documentation
-- **style:** Formatage du code
-- **refactor:** Restructuration du code
-- **test:** Ajout ou modification de tests
-- **chore:** Tâches de maintenance
-
-**Messages de Commit**
-- En français ou en anglais (à définir en équipe)
-- Description claire et concise
-- Référence à l'issue concernée
-
-### Processus de Pull Request
-
-1. Créer une branche depuis develop
-2. Développer la fonctionnalité
-3. Écrire ou mettre à jour les tests
-4. S'assurer que tous les tests passent
-5. Mettre à jour la documentation si nécessaire
-6. Créer une Pull Request vers develop
-7. Attendre la review d'au moins un autre développeur
-8. Corriger les retours si nécessaire
-9. Une fois approuvée, la PR est mergée
-
-### Standards de Code
-
-- Suivre les règles ESLint configurées
-- Formater le code avec Prettier avant de commiter
-- Documenter les fonctions publiques
-- Nommer les variables et fonctions explicitement
-- Principe DRY (Don't Repeat Yourself)
-- Fonctions courtes avec responsabilité unique
-
-### Revue de Code
-
-Les points vérifiés lors de la revue :
-- La fonctionnalité correspond au besoin exprimé
-- Le code est lisible et bien structuré
-- Les tests couvrent les cas nominaux et limites
-- La documentation est à jour
-- Pas de code mort ou commenté
-- Pas de secrets ou mots de passe dans le code
-- Performance acceptable
-
-## 🗺 Feuille de Route
-
-### Phase 1 : Fondations (MVP) ✅
-- Architecture de base NestJS
-- Authentification avec rôles
-- CRUD produits complet
-- Gestion des commandes basique
-- Paiement Stripe fonctionnel
-- Dashboard administrateur simple
-- Interface client e-commerce
-
-### Phase 2 : Enrichissement 🚧
-- Système d'avis et notations
-- Recherche avancée avec filtres
-- Gestion des promotions et codes promo
-- Export de données (PDF, Excel)
-- Mode hors-ligne caissier
-- Notifications email automatiques
-- Amélioration du design responsive
-
-### Phase 3 : Optimisation 📅
-- Cache Redis pour les requêtes fréquentes
-- Optimisation des images et lazy loading
-- Internationalisation (i18n)
-- Thème sombre
-- Tests de performance et optimisation
-- Documentation vidéo
-
-### Phase 4 : Avancé 🎯
-- Application mobile React Native
-- Paiement PayPal et autres moyens
-- Programme de fidélité
-- Chat support client en temps réel
-- API publique pour partenaires
-- Machine learning pour recommandations
-
-## 🆘 Résolution de Problèmes
-
-### Problèmes Courants
-
-**L'application ne démarre pas**
-- Vérifier que PostgreSQL est en cours d'exécution
-- Vérifier les variables d'environnement (.env)
-- Vérifier les logs d'erreur pour plus de détails
-- S'assurer que les ports ne sont pas déjà utilisés
-
-**Erreurs de connexion à la base de données**
-- Vérifier les identifiants dans le fichier .env
-- Tester la connexion avec un client PostgreSQL
-- Vérifier que la base de données existe
-- Vérifier les permissions de l'utilisateur
-
-**Erreurs d'authentification**
-- Vérifier que le token JWT n'est pas expiré
-- Vérifier le format du header Authorization
-- Essayer de se reconnecter pour obtenir un nouveau token
-- Vider le localStorage et réessayer
-
-**Problèmes de paiement**
-- Vérifier que les clés Stripe sont en mode test
-- Utiliser les numéros de carte de test Stripe
-- Consulter les logs webhook Stripe
-- Vérifier la configuration des webhooks
-
-**Problèmes de build frontend**
-- Supprimer node_modules et package-lock.json
-- Réinstaller les dépendances
-- Vider le cache npm
-- Vérifier la version de Node.js
-
-### Où Trouver de l'Aide
-
-1. Documentation Swagger intégrée
-2. Logs de l'application
-3. Issues GitHub du projet
-4. Canal Discord de l'équipe
-5. Documentation officielle des technologies utilisées
-
-## 📚 Ressources et Références
-
-### Documentation Officielle
-
-- [Documentation NestJS](https://docs.nestjs.com/)
-- [Documentation TypeORM](https://typeorm.io/)
-- [Documentation Stripe](https://stripe.com/docs/api)
-- [Documentation React](https://react.dev/)
-- [Documentation PostgreSQL](https://www.postgresql.org/docs/)
-## 📄 Licence et Crédits
-
-### Licence
-
-Ce projet est sous licence MIT. Voir le fichier LICENSE pour plus de détails.
-
-### Équipe de Développement
-
-Développé dans le cadre d'un projet collaboratif d'apprentissage.
-
-### Remerciements
-
-- La communauté NestJS pour l'excellent framework
-- Stripe pour l'infrastructure de paiement
-- Tous les contributeurs open source des bibliothèques utilisées
-
-### Images et Ressources
-
-- Images de produits : Unsplash (libres de droits)
-- Icônes : Heroicons / Material Icons
-- Polices : Google Fonts
+- une boutique en ligne pour les clients ;
+- un espace compte client ;
+- un tableau de bord administrateur ;
+- un terminal de caisse pour les caissiers ;
+- des Route Handlers API sous `src/app/api/` ;
+- la logique metier partagee sous `src/lib/`.
 
 ---
 
-├── Achitecture.md
-├── docker-compose.yml
-├── docs
-│   ├── API.md
-│   ├── CONTRIBUTING.md
-│   ├── DATABASE.md
-│   └── DEPLOYMENT.md
-├── LICENSE
-├── package.json
+## Principes Architecturaux
+
+- **Architecture unifiee Next.js** : pages, layouts, API, middleware et logique applicative dans le meme projet.
+- **App Router** : routes organisees avec `src/app/` et des Route Groups par contexte fonctionnel.
+- **Server Components par defaut** : rendu serveur, SEO et chargement initial des donnees quand c'est pertinent.
+- **Client Components seulement si necessaire** : formulaires, filtres, panier, paiement, terminal POS et composants interactifs.
+- **Validation systematique** : schemas de validation pour les entrees utilisateur et les payloads API.
+- **Acces par role** : separation claire entre `admin`, `cashier` et `customer`.
+- **Gestion d'erreurs centralisee** : reponses API coherentes depuis les Route Handlers.
+- **Observabilite minimale des le depart** : logs applicatifs, erreurs capturees et metriques de base.
+
+---
+
+## Roles Utilisateurs
+
+### Administrateur
+
+**Responsabilites :** gestion complete de la plateforme.
+
+**Capacites :**
+
+- gestion du catalogue produits ;
+- administration des utilisateurs et attribution des roles ;
+- supervision des commandes et transactions ;
+- consultation des tableaux de bord ;
+- configuration des parametres systeme ;
+- gestion des promotions ;
+- export de rapports ;
+- gestion des remboursements et litiges.
+
+**Interface dediee :** `/admin`.
+
+### Caissier
+
+**Responsabilites :** gestion du point de vente.
+
+**Capacites :**
+
+- creation de commandes en boutique ;
+- consultation du catalogue et des stocks ;
+- encaissement ;
+- gestion du panier client ;
+- consultation des transactions de la journee ;
+- recherche rapide de produits ;
+- application de remises autorisees ;
+- impression ou generation de ticket.
+
+**Restrictions :**
+
+- pas d'administration des utilisateurs ;
+- pas de modification du catalogue ;
+- pas de suppression de commandes validees ;
+- pas d'acces aux rapports globaux.
+
+**Interface dediee :** `/cashier`.
+
+### Client
+
+**Responsabilites :** achat en ligne et gestion de son compte.
+
+**Capacites :**
+
+- navigation dans le catalogue ;
+- consultation des fiches produits ;
+- gestion du panier ;
+- passage de commande ;
+- paiement securise ;
+- suivi du statut des commandes ;
+- gestion du profil et des adresses ;
+- consultation de l'historique d'achat ;
+- avis et evaluations produits.
+
+**Interface dediee :** `/shop`, `/catalog`, `/cart`, `/checkout`, `/account/*`.
+
+---
+
+## Fonctionnalites
+
+### Authentification
+
+- inscription ;
+- connexion ;
+- sessions gerees par NextAuth.js ;
+- protection des routes par middleware ;
+- roles applicatifs `admin`, `cashier`, `customer` ;
+- reinitialisation de mot de passe ;
+- verrouillage temporaire apres echecs repetes ;
+- protection contre les attaques par force brute.
+
+### Catalogue Produits
+
+- fiches produits avec images ;
+- categories et variantes ;
+- prix, promotions et stock ;
+- recherche et filtres ;
+- suggestions et produits associes ;
+- upload d'images via Route Handler dedie.
+
+### Commandes
+
+1. selection des produits ;
+2. validation du panier ;
+3. saisie de l'adresse ;
+4. choix du mode de livraison ;
+5. application d'un code promo ;
+6. paiement ;
+7. confirmation de commande.
+
+**Etats principaux :**
+
+- `pending` : commande creee, paiement en attente ;
+- `confirmed` : paiement valide ;
+- `preparing` : preparation en cours ;
+- `shipped` : expedition effectuee ;
+- `delivered` : commande livree ;
+- `cancelled` : commande annulee.
+
+### Paiement
+
+- Stripe Elements ;
+- Apple Pay et Google Pay si actives dans Stripe ;
+- webhooks de paiement via Route Handlers ;
+- remboursements partiels ou totaux ;
+- aucune donnee bancaire stockee dans l'application.
+
+### Tableaux de Bord
+
+**Administrateur :**
+
+- chiffre d'affaires ;
+- commandes par statut ;
+- produits les plus vendus ;
+- performance par categorie ;
+- evolution temporelle ;
+- exports.
+
+**Caissier :**
+
+- ventes de la journee ;
+- nombre de transactions ;
+- panier moyen ;
+- performance personnelle.
+
+### Notifications
+
+- emails transactionnels ;
+- notifications in-app ;
+- alertes de stock ;
+- notifications de changement de statut de commande.
+
+---
+
+## Stack Technique
+
+| Categorie | Technologie | Role |
+|-----------|-------------|------|
+| Framework | Next.js 15 App Router | Application web, routage, rendu serveur, API |
+| UI | React 19 | Composants d'interface |
+| Langage | TypeScript 5.x | Typage statique |
+| Styles | Tailwind CSS 3.x | Styles utilitaires |
+| Authentification | NextAuth.js v5 | Sessions, providers, middleware d'authentification |
+| Base de donnees | PostgreSQL 15+ | Stockage relationnel |
+| ORM retenu | Prisma | Modele de donnees, migrations, client type |
+| Validation | Zod | Validation des formulaires et payloads API |
+| Data fetching serveur | `fetch()` natif | Chargement de donnees dans Server Components et Route Handlers |
+| Data fetching client | TanStack Query v5 | Cache, mutations et synchronisation cote client |
+| Etat global | Zustand | Panier, wishlist et etat UI local |
+| Paiement | Stripe | Paiements, webhooks et remboursements |
+| Email | Nodemailer ou fournisseur SMTP | Emails transactionnels |
+| Tests unitaires | Jest | Tests de logique et composants |
+| Tests UI | React Testing Library | Tests de composants |
+| Tests E2E | Playwright | Parcours critiques utilisateur |
+| Qualite | ESLint, Prettier | Linting et formatage |
+| DevOps | Docker, GitHub Actions | Environnements reproductibles et CI/CD |
+
+---
+
+## Prerequis
+
+- Node.js 20 LTS ou superieur ;
+- npm 10 ou superieur ;
+- PostgreSQL 15 ou superieur ;
+- Git 2.30 ou superieur ;
+- compte Stripe en mode test ;
+- service SMTP de test ou de production.
+
+---
+
+## Installation Locale
+
+### 1. Cloner le depot
+
+```bash
+git clone <url-du-repository>
+cd cashcoin
+```
+
+### 2. Installer les dependances
+
+```bash
+npm install
+```
+
+### 3. Configurer l'environnement
+
+```bash
+cp .env.example .env.local
+```
+
+Renseigner au minimum :
+
+```env
+NODE_ENV=development
+
+DATABASE_URL="postgresql://cashcoin:cashcoin@localhost:5432/cashcoin"
+
+NEXTAUTH_URL="http://localhost:3000"
+NEXTAUTH_SECRET="replace-with-a-long-random-secret"
+
+NEXT_PUBLIC_APP_URL="http://localhost:3000"
+NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY="pk_test_replace_me"
+STRIPE_SECRET_KEY="sk_test_replace_me"
+STRIPE_WEBHOOK_SECRET="whsec_replace_me"
+
+SMTP_HOST="localhost"
+SMTP_PORT="1025"
+SMTP_USER=""
+SMTP_PASSWORD=""
+EMAIL_FROM="CashCoin <no-reply@cashcoin.local>"
+
+UPLOAD_MAX_SIZE_MB=5
+```
+
+### 4. Preparer la base de donnees
+
+```bash
+npm run db:migrate
+npm run db:seed
+```
+
+### 5. Demarrer l'application
+
+```bash
+npm run dev
+```
+
+L'application est disponible sur :
+
+- boutique : `http://localhost:3000/shop` ;
+- catalogue : `http://localhost:3000/catalog` ;
+- administration : `http://localhost:3000/admin` ;
+- caisse : `http://localhost:3000/cashier`.
+
+---
+
+## Scripts npm
+
+| Script | Role |
+|--------|------|
+| `npm run dev` | Demarre Next.js en mode developpement |
+| `npm run build` | Genere le build de production |
+| `npm run start` | Lance le build de production |
+| `npm run lint` | Execute ESLint |
+| `npm run format` | Formate le code avec Prettier |
+| `npm run typecheck` | Verifie TypeScript |
+| `npm run test` | Execute les tests unitaires |
+| `npm run test:e2e` | Execute les tests Playwright |
+| `npm run db:migrate` | Applique les migrations Prisma |
+| `npm run db:seed` | Insere les donnees de test |
+| `npm run db:studio` | Ouvre Prisma Studio |
+
+---
+
+## Structure du Projet
+
+L'arborescence cible suit l'organisation Next.js App Router decrite dans `Architecture.md`, adaptee a une application unifiee.
+
+```text
+cashcoin/
+│
 ├── README.md
-├── scripts
+├── Architecture.md
+├── LICENSE
+├── .gitignore
+├── .editorconfig
+├── .env.example
+├── .env.local
+├── docker-compose.yml
+├── docker-compose.prod.yml
+├── package.json
+├── tsconfig.json
+├── next.config.ts
+├── middleware.ts
+├── Dockerfile
+├── .dockerignore
+│
+├── public/
+│   ├── favicon.ico
+│   ├── manifest.json
+│   ├── robots.txt
+│   └── assets/
+│       ├── images/
+│       │   ├── logo.png
+│       │   ├── hero-bg.jpg
+│       │   └── placeholder-product.png
+│       └── fonts/
+│
+├── prisma/
+│   ├── schema.prisma
+│   ├── migrations/
+│   └── seed.ts
+│
+├── src/
+│   ├── app/
+│   │   ├── layout.tsx
+│   │   ├── page.tsx
+│   │   ├── error.tsx
+│   │   ├── not-found.tsx
+│   │   ├── loading.tsx
+│   │   ├── globals.css
+│   │   │
+│   │   ├── (auth)/
+│   │   │   ├── layout.tsx
+│   │   │   ├── login/
+│   │   │   │   └── page.tsx
+│   │   │   ├── register/
+│   │   │   │   └── page.tsx
+│   │   │   ├── forgot-password/
+│   │   │   │   └── page.tsx
+│   │   │   └── reset-password/
+│   │   │       └── page.tsx
+│   │   │
+│   │   ├── (shop)/
+│   │   │   ├── layout.tsx
+│   │   │   ├── shop/
+│   │   │   │   └── page.tsx
+│   │   │   ├── catalog/
+│   │   │   │   ├── page.tsx
+│   │   │   │   └── loading.tsx
+│   │   │   ├── products/
+│   │   │   │   └── [slug]/
+│   │   │   │       ├── page.tsx
+│   │   │   │       └── loading.tsx
+│   │   │   ├── cart/
+│   │   │   │   └── page.tsx
+│   │   │   ├── checkout/
+│   │   │   │   └── page.tsx
+│   │   │   └── order-confirmation/
+│   │   │       └── page.tsx
+│   │   │
+│   │   ├── (account)/
+│   │   │   ├── layout.tsx
+│   │   │   └── account/
+│   │   │       ├── profile/
+│   │   │       │   └── page.tsx
+│   │   │       ├── orders/
+│   │   │       │   ├── page.tsx
+│   │   │       │   └── [id]/
+│   │   │       │       └── page.tsx
+│   │   │       ├── addresses/
+│   │   │       │   └── page.tsx
+│   │   │       └── wishlist/
+│   │   │           └── page.tsx
+│   │   │
+│   │   ├── (admin)/
+│   │   │   ├── layout.tsx
+│   │   │   └── admin/
+│   │   │       ├── page.tsx
+│   │   │       ├── loading.tsx
+│   │   │       ├── products/
+│   │   │       │   ├── page.tsx
+│   │   │       │   ├── new/
+│   │   │       │   │   └── page.tsx
+│   │   │       │   └── [id]/
+│   │   │       │       ├── page.tsx
+│   │   │       │       └── edit/
+│   │   │       │           └── page.tsx
+│   │   │       ├── users/
+│   │   │       │   ├── page.tsx
+│   │   │       │   ├── new/
+│   │   │       │   │   └── page.tsx
+│   │   │       │   └── [id]/
+│   │   │       │       └── page.tsx
+│   │   │       ├── orders/
+│   │   │       │   ├── page.tsx
+│   │   │       │   └── [id]/
+│   │   │       │       └── page.tsx
+│   │   │       ├── reports/
+│   │   │       │   └── page.tsx
+│   │   │       └── settings/
+│   │   │           └── page.tsx
+│   │   │
+│   │   ├── (cashier)/
+│   │   │   ├── layout.tsx
+│   │   │   └── cashier/
+│   │   │       ├── page.tsx
+│   │   │       ├── transactions/
+│   │   │       │   └── page.tsx
+│   │   │       └── daily-report/
+│   │   │           └── page.tsx
+│   │   │
+│   │   └── api/
+│   │       ├── auth/
+│   │       │   └── [...nextauth]/
+│   │       │       └── route.ts
+│   │       ├── products/
+│   │       │   ├── route.ts
+│   │       │   └── [id]/
+│   │       │       └── route.ts
+│   │       ├── orders/
+│   │       │   ├── route.ts
+│   │       │   └── [id]/
+│   │       │       └── route.ts
+│   │       ├── users/
+│   │       │   ├── route.ts
+│   │       │   └── [id]/
+│   │       │       └── route.ts
+│   │       ├── payment/
+│   │       │   ├── route.ts
+│   │       │   └── webhook/
+│   │       │       └── route.ts
+│   │       ├── dashboard/
+│   │       │   └── route.ts
+│   │       ├── upload/
+│   │       │   └── route.ts
+│   │       └── revalidate/
+│   │           └── route.ts
+│   │
+│   ├── components/
+│   │   ├── ui/
+│   │   │   ├── button/
+│   │   │   │   ├── button.tsx
+│   │   │   │   └── button.types.ts
+│   │   │   ├── modal/
+│   │   │   │   └── modal.tsx
+│   │   │   ├── table/
+│   │   │   │   └── table.tsx
+│   │   │   ├── card/
+│   │   │   ├── input/
+│   │   │   ├── select/
+│   │   │   ├── badge/
+│   │   │   ├── avatar/
+│   │   │   ├── spinner/
+│   │   │   ├── alert/
+│   │   │   ├── pagination/
+│   │   │   ├── breadcrumb/
+│   │   │   ├── tooltip/
+│   │   │   ├── dropdown/
+│   │   │   └── search-bar/
+│   │   ├── layout/
+│   │   │   ├── admin-sidebar.tsx
+│   │   │   ├── admin-header.tsx
+│   │   │   ├── cashier-header.tsx
+│   │   │   ├── navbar.tsx
+│   │   │   ├── footer.tsx
+│   │   │   └── account-sidebar.tsx
+│   │   ├── features/
+│   │   │   ├── products/
+│   │   │   │   ├── product-card.tsx
+│   │   │   │   ├── product-grid.tsx
+│   │   │   │   ├── product-filters.tsx
+│   │   │   │   ├── product-form.tsx
+│   │   │   │   └── product-image-upload.tsx
+│   │   │   ├── cart/
+│   │   │   │   ├── cart-drawer.tsx
+│   │   │   │   ├── cart-item.tsx
+│   │   │   │   └── cart-summary.tsx
+│   │   │   ├── checkout/
+│   │   │   │   ├── checkout-form.tsx
+│   │   │   │   └── stripe-payment.tsx
+│   │   │   ├── orders/
+│   │   │   │   ├── order-list.tsx
+│   │   │   │   ├── order-detail.tsx
+│   │   │   │   └── order-status-badge.tsx
+│   │   │   ├── dashboard/
+│   │   │   │   ├── stats-card.tsx
+│   │   │   │   ├── revenue-chart.tsx
+│   │   │   │   └── recent-orders-table.tsx
+│   │   │   ├── auth/
+│   │   │   │   ├── login-form.tsx
+│   │   │   │   ├── register-form.tsx
+│   │   │   │   └── forgot-password-form.tsx
+│   │   │   └── pos/
+│   │   │       ├── pos-terminal.tsx
+│   │   │       └── pos-cart.tsx
+│   │   └── providers/
+│   │       ├── query-provider.tsx
+│   │       ├── auth-provider.tsx
+│   │       ├── theme-provider.tsx
+│   │       └── toast-provider.tsx
+│   │
+│   ├── lib/
+│   │   ├── api/
+│   │   │   ├── client.ts
+│   │   │   ├── auth.api.ts
+│   │   │   ├── users.api.ts
+│   │   │   ├── products.api.ts
+│   │   │   ├── cart.api.ts
+│   │   │   ├── orders.api.ts
+│   │   │   ├── payment.api.ts
+│   │   │   ├── dashboard.api.ts
+│   │   │   ├── reviews.api.ts
+│   │   │   └── upload.api.ts
+│   │   ├── queries/
+│   │   │   ├── use-products.ts
+│   │   │   ├── use-orders.ts
+│   │   │   ├── use-cart.ts
+│   │   │   ├── use-users.ts
+│   │   │   ├── use-dashboard.ts
+│   │   │   └── use-reviews.ts
+│   │   ├── store/
+│   │   │   ├── cart.store.ts
+│   │   │   ├── ui.store.ts
+│   │   │   └── wishlist.store.ts
+│   │   ├── auth/
+│   │   │   ├── auth.config.ts
+│   │   │   ├── auth.ts
+│   │   │   └── session.ts
+│   │   ├── db/
+│   │   │   ├── prisma.ts
+│   │   │   └── repositories/
+│   │   ├── services/
+│   │   │   ├── products.service.ts
+│   │   │   ├── orders.service.ts
+│   │   │   ├── payments.service.ts
+│   │   │   └── users.service.ts
+│   │   └── utils/
+│   │       ├── format-currency.ts
+│   │       ├── format-date.ts
+│   │       ├── validators.ts
+│   │       ├── constants.ts
+│   │       └── helpers.ts
+│   │
+│   ├── types/
+│   │   ├── user.types.ts
+│   │   ├── product.types.ts
+│   │   ├── order.types.ts
+│   │   ├── cart.types.ts
+│   │   ├── payment.types.ts
+│   │   ├── api.types.ts
+│   │   ├── next-auth.d.ts
+│   │   └── common.types.ts
+│   │
+│   └── config/
+│       ├── navigation.config.ts
+│       └── site.config.ts
+│
+├── docs/
+│   ├── API.md
+│   ├── DATABASE.md
+│   ├── DEPLOYMENT.md
+│   └── CONTRIBUTING.md
+│
+├── scripts/
+│   ├── seed.sh
 │   ├── backup-db.sh
-│   ├── deploy.sh
-│   └── seed.sh
-├── server
-│   ├── logs
-│   ├── package.json
-│   ├── src
-│   │   ├── app.module.ts
-│   │   ├── common
-│   │   │   ├── decorators
-│   │   │   ├── enums
-│   │   │   ├── filters
-│   │   │   ├── guards
-│   │   │   ├── interceptors
-│   │   │   ├── interfaces
-│   │   │   ├── middleware
-│   │   │   ├── pipes
-│   │   │   └── utils
-│   │   ├── config
-│   │   ├── database
-│   │   │   ├── migrations
-│   │   │   └── seeds
-│   │   ├── main.ts
-│   │   └── modules
-│   │       ├── auth
-│   │       │   ├── auth.controller.ts
-│   │       │   ├── auth.module.ts
-│   │       │   ├── auth.service.ts
-│   │       │   ├── dto
-│   │       │   ├── strategies
-│   │       │   └── tests
-│   │       ├── cart
-│   │       │   ├── cart.controller.ts
-│   │       │   ├── cart.module.ts
-│   │       │   ├── cart.service.ts
-│   │       │   ├── dto
-│   │       │   │   ├── create-cart-item.dto.ts
-│   │       │   │   └── update-cart-item.dto.ts
-│   │       │   ├── entities
-│   │       │   │   └── cart-item.entity.ts
-│   │       │   └── tests
-│   │       ├── dashboard
-│   │       │   ├── dashboard.controller.ts
-│   │       │   ├── dashboard.module.ts
-│   │       │   ├── dashboard.service.ts
-│   │       │   ├── dto
-│   │       │   └── tests
-│   │       ├── notifications
-│   │       │   ├── notifications.controller.ts
-│   │       │   ├── notifications.module.ts
-│   │       │   ├── notifications.service.ts
-│   │       │   ├── templates
-│   │       │   └── tests
-│   │       ├── orders
-│   │       │   ├── dto
-│   │       │   │   ├── create-order.dto.ts
-│   │       │   │   └── update-order.dto.ts
-│   │       │   ├── entities
-│   │       │   │   └── order.entity.ts
-│   │       │   ├── orders.controller.ts
-│   │       │   ├── orders.module.ts
-│   │       │   ├── orders.service.ts
-│   │       │   └── tests
-│   │       ├── payment
-│   │       │   ├── dto
-│   │       │   ├── payment.controller.ts
-│   │       │   ├── payment.module.ts
-│   │       │   ├── payment.service.ts
-│   │       │   ├── tests
-│   │       │   └── webhooks
-│   │       ├── products
-│   │       │   ├── dto
-│   │       │   │   ├── create-product.dto.ts
-│   │       │   │   └── update-product.dto.ts
-│   │       │   ├── entities
-│   │       │   │   └── product.entity.ts
-│   │       │   ├── products.controller.ts
-│   │       │   ├── products.module.ts
-│   │       │   ├── products.service.ts
-│   │       │   └── tests
-│   │       ├── reviews
-│   │       │   ├── dto
-│   │       │   │   ├── create-review.dto.ts
-│   │       │   │   └── update-review.dto.ts
-│   │       │   ├── entities
-│   │       │   │   └── review.entity.ts
-│   │       │   ├── reviews.controller.ts
-│   │       │   ├── reviews.module.ts
-│   │       │   ├── reviews.service.ts
-│   │       │   └── tests
-│   │       └── users
-│   │           ├── dto
-│   │           │   ├── create-user.dto.ts
-│   │           │   └── update-user.dto.ts
-│   │           ├── entities
-│   │           │   └── user.entity.ts
-│   │           ├── tests
-│   │           ├── users.controller.ts
-│   │           ├── users.module.ts
-│   │           └── users.service.ts
-│   ├── test
-│   └── uploads
-│       ├── avatars
-│       └── products
-└── web
-    ├── AGENTS.md
-    ├── ✅ App Router directories created
-    ├── CLAUDE.md
-    ├── ✅ Component & lib directories created
-    ├── echo
-    ├── eslint.config.mjs
-    ├── middleware.ts
-    ├── next.config.ts
-    ├── next-env.d.ts
-    ├── package.json
-    ├── package-lock.json
-    ├── postcss.config.mjs
-    ├── public
-    │   ├── file.svg
-    │   ├── globe.svg
-    │   ├── next.svg
-    │   ├── vercel.svg
-    │   └── window.svg
-    ├── README.md
-    ├── ✅ Server directories created
-    ├── src
-    │   ├── app
-    │   │   ├── (account)
-    │   │   │   ├── account
-    │   │   │   │   ├── addresses
-    │   │   │   │   │   └── page.tsx
-    │   │   │   │   ├── orders
-    │   │   │   │   │   ├── [id]
-    │   │   │   │   │   │   └── page.tsx
-    │   │   │   │   │   └── page.tsx
-    │   │   │   │   ├── profile
-    │   │   │   │   │   └── page.tsx
-    │   │   │   │   └── wishlist
-    │   │   │   │       └── page.tsx
-    │   │   │   └── layout.tsx
-    │   │   ├── (admin)
-    │   │   │   ├── admin
-    │   │   │   │   ├── orders
-    │   │   │   │   │   ├── [id]
-    │   │   │   │   │   │   └── page.tsx
-    │   │   │   │   │   └── page.tsx
-    │   │   │   │   ├── page.tsx
-    │   │   │   │   ├── products
-    │   │   │   │   │   ├── [id]
-    │   │   │   │   │   │   ├── edit
-    │   │   │   │   │   │   │   └── page.tsx
-    │   │   │   │   │   │   └── page.tsx
-    │   │   │   │   │   ├── new
-    │   │   │   │   │   │   └── page.tsx
-    │   │   │   │   │   └── page.tsx
-    │   │   │   │   ├── reports
-    │   │   │   │   │   └── page.tsx
-    │   │   │   │   ├── settings
-    │   │   │   │   │   └── page.tsx
-    │   │   │   │   └── users
-    │   │   │   │       ├── [id]
-    │   │   │   │       │   └── page.tsx
-    │   │   │   │       ├── new
-    │   │   │   │       │   └── page.tsx
-    │   │   │   │       └── page.tsx
-    │   │   │   └── layout.tsx
-    │   │   ├── api
-    │   │   │   ├── auth
-    │   │   │   │   └── [...nextauth]
-    │   │   │   │       └── route.ts
-    │   │   │   ├── revalidate
-    │   │   │   │   └── route.ts
-    │   │   │   └── upload
-    │   │   │       └── route.ts
-    │   │   ├── (auth)
-    │   │   │   ├── forgot-password
-    │   │   │   │   └── page.tsx
-    │   │   │   ├── layout.tsx
-    │   │   │   ├── login
-    │   │   │   │   └── page.tsx
-    │   │   │   ├── register
-    │   │   │   │   └── page.tsx
-    │   │   │   └── reset-password
-    │   │   │       └── page.tsx
-    │   │   ├── (cashier)
-    │   │   │   ├── cashier
-    │   │   │   │   ├── daily-report
-    │   │   │   │   │   └── page.tsx
-    │   │   │   │   ├── page.tsx
-    │   │   │   │   └── transactions
-    │   │   │   │       └── page.tsx
-    │   │   │   └── layout.tsx
-    │   │   ├── error.tsx
-    │   │   ├── favicon.ico
-    │   │   ├── globals.css
-    │   │   ├── layout.tsx
-    │   │   ├── not-found.tsx
-    │   │   ├── page.tsx
-    │   │   └── (shop)
-    │   │       ├── cart
-    │   │       │   └── page.tsx
-    │   │       ├── catalog
-    │   │       │   ├── loading.tsx
-    │   │       │   └── page.tsx
-    │   │       ├── checkout
-    │   │       │   └── page.tsx
-    │   │       ├── layout.tsx
-    │   │       ├── order-confirmation
-    │   │       │   └── page.tsx
-    │   │       ├── products
-    │   │       │   └── [slug]
-    │   │       │       └── page.tsx
-    │   │       └── shop
-    │   │           └── page.tsx
-    │   ├── components
-    │   │   ├── features
-    │   │   │   ├── auth
-    │   │   │   │   ├── forgot-password-form.tsx
-    │   │   │   │   ├── login-form.tsx
-    │   │   │   │   └── register-form.tsx
-    │   │   │   ├── cart
-    │   │   │   ├── checkout
-    │   │   │   │   └── checkout-form.tsx
-    │   │   │   ├── dashboard
-    │   │   │   │   ├── recent-orders-table.tsx
-    │   │   │   │   ├── revenue-chart.tsx
-    │   │   │   │   └── stats-card.tsx
-    │   │   │   ├── orders
-    │   │   │   ├── pos
-    │   │   │   └── products
-    │   │   │       ├── product-card.tsx
-    │   │   │       ├── product-filters.tsx
-    │   │   │       └── product-grid.tsx
-    │   │   ├── layout
-    │   │   │   ├── account-sidebar.tsx
-    │   │   │   ├── admin-header.tsx
-    │   │   │   ├── admin-sidebar.tsx
-    │   │   │   ├── cashier-header.tsx
-    │   │   │   ├── footer.tsx
-    │   │   │   └── navbar.tsx
-    │   │   ├── providers
-    │   │   │   ├── auth-provider.tsx
-    │   │   │   ├── query-provider.tsx
-    │   │   │   ├── theme-provider.tsx
-    │   │   │   └── toast-provider.tsx
-    │   │   └── ui
-    │   │       ├── alert
-    │   │       ├── avatar
-    │   │       ├── badge
-    │   │       ├── breadcrumb
-    │   │       ├── button
-    │   │       ├── card
-    │   │       ├── dropdown
-    │   │       ├── input
-    │   │       ├── modal
-    │   │       ├── pagination
-    │   │       ├── search-bar
-    │   │       ├── select
-    │   │       ├── spinner
-    │   │       ├── table
-    │   │       └── tooltip
-    │   ├── config
-    │   │   ├── navigation.config.ts
-    │   │   └── site.config.ts
-    │   ├── lib
-    │   │   ├── api
-    │   │   │   ├── client.ts
-    │   │   │   ├── dashboard.api.ts
-    │   │   │   ├── orders.api.ts
-    │   │   │   ├── payment.api.ts
-    │   │   │   ├── products.api.ts
-    │   │   │   └── users.api.ts
-    │   │   ├── auth
-    │   │   │   ├── auth.config.ts
-    │   │   │   ├── auth.ts
-    │   │   │   └── session.ts
-    │   │   ├── queries
-    │   │   ├── store
-    │   │   │   ├── cart.store.ts
-    │   │   │   ├── ui.store.ts
-    │   │   │   └── wishlist.store.ts
-    │   │   └── utils
-    │   │       ├── constants.ts
-    │   │       ├── format-currency.ts
-    │   │       └── format-date.ts
-    │   └── types
-    │       ├── api.types.ts
-    │       ├── cart.types.ts
-    │       ├── next-auth.d.ts
-    │       ├── order.types.ts
-    │       ├── product.types.ts
-    │       └── user.types.ts
-    └── tsconfig.json
+│   └── deploy.sh
+│
+└── .github/
+    ├── workflows/
+    │   ├── ci.yml
+    │   ├── deploy-staging.yml
+    │   └── deploy-prod.yml
+    └── PULL_REQUEST_TEMPLATE.md
+```
 
+---
 
+## App Router et Route Groups
+
+| Route Group | URLs | Layout |
+|-------------|------|--------|
+| `(auth)` | `/login`, `/register`, `/forgot-password`, `/reset-password` | Layout centre, sans navigation principale |
+| `(shop)` | `/shop`, `/catalog`, `/products/[slug]`, `/cart`, `/checkout` | Boutique publique avec navigation et footer |
+| `(account)` | `/account/*` | Espace client protege |
+| `(admin)` | `/admin/*` | Tableau de bord administrateur |
+| `(cashier)` | `/cashier/*` | Terminal point de vente |
+
+---
+
+## Server Components et Client Components
+
+| Type | Usage | Marqueur |
+|------|-------|----------|
+| Server Component | chargement de donnees, SEO, rendu initial, pages statiques ou revalidees | aucun marqueur |
+| Client Component | hooks React, evenements, formulaires, panier, paiement, POS | `'use client'` en premiere ligne |
+
+**Regle de decision :** commencer cote serveur, basculer cote client seulement quand le composant a besoin d'interactivite ou d'un etat navigateur.
+
+---
+
+## Flux de Donnees
+
+### Creation d'une Commande
+
+```text
+Client
+  -> /cart
+  -> CartPage + cart.store.ts
+  -> /checkout
+  -> checkout-form.tsx
+  -> stripe-payment.tsx
+  -> POST /api/payment
+  -> Stripe
+  -> POST /api/orders
+  -> Orders service + Prisma
+  -> Email de confirmation
+  -> /order-confirmation?orderId=xxx
+```
+
+### Dashboard Administrateur
+
+```text
+/admin
+  -> DashboardPage
+  -> GET /api/dashboard
+  -> Dashboard service + Prisma
+  -> stats-card.tsx
+  -> revenue-chart.tsx
+```
+
+---
+
+## Documentation API
+
+Les endpoints applicatifs sont implementes avec des **Route Handlers** Next.js.
+
+Un endpoint se trouve toujours dans un fichier `route.ts` :
+
+```text
+src/app/api/products/route.ts
+src/app/api/products/[id]/route.ts
+src/app/api/orders/route.ts
+src/app/api/orders/[id]/route.ts
+src/app/api/payment/route.ts
+src/app/api/payment/webhook/route.ts
+src/app/api/upload/route.ts
+```
+
+### Organisation des Endpoints
+
+| Domaine | Route Handler | Methodes attendues |
+|---------|---------------|--------------------|
+| Auth | `src/app/api/auth/[...nextauth]/route.ts` | `GET`, `POST` |
+| Produits | `src/app/api/products/route.ts` | `GET`, `POST` |
+| Produit detail | `src/app/api/products/[id]/route.ts` | `GET`, `PATCH`, `DELETE` |
+| Commandes | `src/app/api/orders/route.ts` | `GET`, `POST` |
+| Commande detail | `src/app/api/orders/[id]/route.ts` | `GET`, `PATCH` |
+| Utilisateurs | `src/app/api/users/route.ts` | `GET`, `POST` |
+| Paiement | `src/app/api/payment/route.ts` | `POST` |
+| Webhook Stripe | `src/app/api/payment/webhook/route.ts` | `POST` |
+| Dashboard | `src/app/api/dashboard/route.ts` | `GET` |
+| Upload | `src/app/api/upload/route.ts` | `POST` |
+| Revalidation | `src/app/api/revalidate/route.ts` | `POST` |
+
+### Format de Reponse API
+
+Les Route Handlers doivent retourner une structure coherente :
+
+```json
+{
+  "success": true,
+  "data": {},
+  "message": "Operation reussie"
+}
+```
+
+En cas d'erreur :
+
+```json
+{
+  "success": false,
+  "error": {
+    "code": "VALIDATION_ERROR",
+    "message": "Donnees invalides",
+    "details": []
+  }
+}
+```
+
+### Codes HTTP
+
+| Code | Usage |
+|------|-------|
+| `200` | Lecture ou modification reussie |
+| `201` | Ressource creee |
+| `400` | Payload invalide |
+| `401` | Session absente ou invalide |
+| `403` | Role insuffisant |
+| `404` | Ressource introuvable |
+| `409` | Conflit metier |
+| `422` | Validation semantique echouee |
+| `500` | Erreur interne |
+
+---
+
+## Base de Donnees
+
+### Modele Conceptuel
+
+**User**
+
+- `id` UUID ;
+- `email` unique ;
+- `passwordHash` optionnel selon provider ;
+- `fullName` ;
+- `role` : `admin`, `cashier`, `customer` ;
+- `avatarUrl` ;
+- `isActive` ;
+- dates de creation et modification ;
+- date de derniere connexion.
+
+**Product**
+
+- `id` UUID ;
+- `name` ;
+- `slug` unique ;
+- `description` ;
+- `price` ;
+- `stock` ;
+- `categoryId` ;
+- `images` ;
+- `isActive` ;
+- `createdById` ;
+- dates de creation et modification.
+
+**Order**
+
+- `id` UUID ;
+- `customerId` ;
+- `status` ;
+- `totalAmount` ;
+- `shippingAddress` ;
+- `stripePaymentIntentId` ;
+- `notes` ;
+- `createdById` ;
+- dates de creation et modification.
+
+**OrderItem**
+
+- `id` UUID ;
+- `orderId` ;
+- `productId` ;
+- `quantity` ;
+- `unitPrice` ;
+- `lineTotal`.
+
+**Payment**
+
+- `id` UUID ;
+- `orderId` ;
+- `stripePaymentIntentId` ;
+- `amount` ;
+- `currency` ;
+- `status` ;
+- `method` ;
+- dates de creation et modification.
+
+### Relations
+
+- un utilisateur peut avoir plusieurs commandes ;
+- une commande appartient a un utilisateur ;
+- une commande contient plusieurs lignes ;
+- une ligne de commande reference un produit ;
+- un paiement est lie a une commande ;
+- un produit peut etre cree par un administrateur.
+
+### Migrations et Seeds
+
+Les migrations sont gerees par Prisma et versionnees dans `prisma/migrations/`.
+
+Les seeds creent un environnement de test avec :
+
+- des utilisateurs pour chaque role ;
+- des produits exemples ;
+- des commandes exemples ;
+- des donnees coherentes pour les demonstrations.
+
+---
+
+## Securite
+
+### Authentification et Sessions
+
+- sessions gerees par NextAuth.js ;
+- secret de session long et aleatoire via `NEXTAUTH_SECRET` ;
+- cookies HTTP-only ;
+- expiration et renouvellement des sessions ;
+- protection des routes sensibles via `middleware.ts`.
+
+### Autorisation
+
+- verification du role dans les pages protegees ;
+- verification du role dans chaque Route Handler sensible ;
+- separation stricte des interfaces `admin`, `cashier` et `customer` ;
+- refus par defaut si le role est absent ou inconnu.
+
+### Donnees Sensibles
+
+- aucune cle secrete exposee avec le prefixe `NEXT_PUBLIC_` ;
+- aucune donnee bancaire stockee ;
+- hash des mots de passe si authentification par identifiants ;
+- validation des uploads ;
+- limitation de taille des fichiers ;
+- controle du type MIME ;
+- journalisation sans secrets.
+
+### Variables d'Environnement
+
+| Variable | Exposition | Role |
+|----------|------------|------|
+| `NODE_ENV` | serveur | Environnement courant |
+| `DATABASE_URL` | serveur | Connexion PostgreSQL |
+| `NEXTAUTH_URL` | serveur | URL publique de l'application |
+| `NEXTAUTH_SECRET` | serveur | Secret de signature des sessions |
+| `NEXT_PUBLIC_APP_URL` | client | URL publique utilisable cote navigateur |
+| `NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY` | client | Cle publique Stripe |
+| `STRIPE_SECRET_KEY` | serveur | Cle secrete Stripe |
+| `STRIPE_WEBHOOK_SECRET` | serveur | Verification des webhooks Stripe |
+| `SMTP_HOST` | serveur | Serveur SMTP |
+| `SMTP_PORT` | serveur | Port SMTP |
+| `SMTP_USER` | serveur | Identifiant SMTP |
+| `SMTP_PASSWORD` | serveur | Mot de passe SMTP |
+| `EMAIL_FROM` | serveur | Expediteur des emails |
+| `UPLOAD_MAX_SIZE_MB` | serveur | Taille maximale d'upload |
+
+---
+
+## Tests
+
+### Types de Tests
+
+| Type | Cible | Outil |
+|------|-------|-------|
+| Unitaires | fonctions pures, services, validateurs | Jest |
+| Composants | formulaires, cartes, tableaux | React Testing Library |
+| Integration | Route Handlers, Prisma, auth | Jest |
+| E2E | achat, login, admin, caisse | Playwright |
+
+### Scenarios Critiques
+
+- inscription et connexion ;
+- acces refuse aux routes protegees ;
+- creation de produit par administrateur ;
+- impossibilite de creer un produit par caissier ou client ;
+- ajout au panier ;
+- passage de commande ;
+- paiement reussi ;
+- webhook Stripe traite une seule fois ;
+- mise a jour du stock ;
+- consultation d'une commande uniquement par son proprietaire ou par un role autorise.
+
+---
+
+## Deploiement
+
+### Environnements
+
+| Environnement | Usage |
+|---------------|-------|
+| Local | Developpement |
+| Preview | Validation de Pull Request |
+| Staging | Validation fonctionnelle |
+| Production | Utilisateurs finaux |
+
+### Strategie
+
+1. installation des dependances ;
+2. verification TypeScript ;
+3. lint ;
+4. tests ;
+5. migration de base de donnees ;
+6. build Next.js ;
+7. deploiement ;
+8. verification des routes critiques.
+
+### Observabilite
+
+- logs structures ;
+- suivi des erreurs ;
+- metriques de performance ;
+- alertes sur les erreurs de paiement ;
+- alertes sur les echecs de webhook ;
+- suivi des temps de reponse des Route Handlers.
+
+---
+
+## Guide de Contribution
+
+### Pour Commencer
+
+1. lire le README ;
+2. installer le projet en local ;
+3. explorer l'arborescence `src/app/` ;
+4. comprendre les roles et permissions ;
+5. choisir une issue ;
+6. creer une branche dediee.
+
+### Branches
+
+- `main` : version stable ;
+- `develop` : integration ;
+- `feature/*` : nouvelle fonctionnalite ;
+- `bugfix/*` : correction ;
+- `docs/*` : documentation ;
+- `chore/*` : maintenance.
+
+### Commits
+
+Le projet suit les commits conventionnels :
+
+- `feat:` nouvelle fonctionnalite ;
+- `fix:` correction de bug ;
+- `docs:` documentation ;
+- `style:` formatage ;
+- `refactor:` restructuration ;
+- `test:` tests ;
+- `chore:` maintenance.
+
+### Pull Request
+
+1. creer une branche depuis `develop` ;
+2. developper la fonctionnalite ;
+3. ajouter ou mettre a jour les tests ;
+4. verifier `lint`, `typecheck` et `test` ;
+5. mettre a jour la documentation si necessaire ;
+6. ouvrir une Pull Request vers `develop` ;
+7. traiter les retours de review ;
+8. merger apres validation.
+
+### Revue de Code
+
+Points verifies :
+
+- besoin fonctionnel respecte ;
+- composants bien places dans l'arborescence ;
+- Route Handlers proteges si necessaire ;
+- validation des donnees ;
+- erreurs gerees proprement ;
+- tests adaptes au risque ;
+- absence de secrets ;
+- lisibilite et maintenabilite.
+
+---
+
+## Feuille de Route
+
+### Phase 1 : Fondations
+
+- initialisation Next.js 15 ;
+- configuration TypeScript ;
+- configuration Tailwind CSS ;
+- configuration Prisma ;
+- schema initial de base de donnees ;
+- NextAuth.js ;
+- middleware de protection ;
+- layouts principaux ;
+- premiers composants UI.
+
+### Phase 2 : MVP
+
+- catalogue produits ;
+- panier ;
+- checkout ;
+- paiement Stripe ;
+- espace client ;
+- administration produits ;
+- terminal caissier simple ;
+- seeds de demonstration.
+
+### Phase 3 : Industrialisation
+
+- tests E2E ;
+- CI/CD ;
+- observabilite ;
+- exports ;
+- optimisation images ;
+- gestion avancee des stocks ;
+- webhooks robustes.
+
+### Phase 4 : Fonctionnalites Avancees
+
+- promotions complexes ;
+- recommandations produits ;
+- notifications temps reel ;
+- rapports avances ;
+- audit log ;
+- multi-boutique si besoin metier confirme.
+
+---
+
+## Resolution de Problemes
+
+### `npm install` echoue
+
+- verifier la version de Node.js ;
+- supprimer `node_modules` et le lockfile uniquement si l'equipe valide cette action ;
+- relancer l'installation ;
+- verifier les dependances natives eventuelles.
+
+### La base de donnees ne repond pas
+
+- verifier `DATABASE_URL` ;
+- verifier que PostgreSQL est demarre ;
+- tester la connexion avec un client SQL ;
+- relancer les migrations.
+
+### Authentification instable
+
+- verifier `NEXTAUTH_URL` ;
+- verifier `NEXTAUTH_SECRET` ;
+- verifier les cookies en environnement local ;
+- verifier le middleware de protection.
+
+### Paiement Stripe en erreur
+
+- verifier la cle publique ;
+- verifier la cle secrete ;
+- verifier le webhook secret ;
+- utiliser les cartes de test Stripe ;
+- consulter les evenements dans le dashboard Stripe.
+
+---
+
+## Ressources
+
+- Documentation Next.js : https://nextjs.org/docs
+- Documentation React : https://react.dev
+- Documentation Auth.js / NextAuth.js : https://authjs.dev
+- Documentation Prisma : https://www.prisma.io/docs
+- Documentation PostgreSQL : https://www.postgresql.org/docs
+- Documentation Stripe : https://docs.stripe.com
+- Documentation TanStack Query : https://tanstack.com/query/latest
+- Documentation Zustand : https://zustand.docs.pmnd.rs
+- Documentation Tailwind CSS : https://tailwindcss.com/docs
+- Documentation Playwright : https://playwright.dev/docs/intro
+
+---
+
+## Licence
+
+Voir le fichier `LICENSE`.
+
+---
+
+## Equipe
+
+Projet developpe par l'equipe CashCoin.
